@@ -1,0 +1,948 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<title>Starfield Portfolio</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+  /* Layout: a fixed WebGL sky behind a single left-hand column of glass panels; scrolling flies the camera from TON 618 out to three imagined worlds. */
+  :root {
+    --void: #04050a;
+    --panel: rgba(9, 11, 22, 0.62);
+    --line: rgba(160, 175, 230, 0.16);
+    --star: #e9ecf8;
+    --dim: #9aa2bf;
+    --accretion: #ffb35c;
+    --ice: #8fd8ff;
+    --font-display: "Syncopate", "Arial Black", system-ui, sans-serif;
+    --font-body: "Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --font-mono: "JetBrains Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+    color-scheme: dark;
+  }
+  html, body { background: var(--void); color: var(--star); }
+  body {
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  #sky {
+    position: fixed; inset: 0; width: 100%; height: 100%; display: block; z-index: 0;
+    background: radial-gradient(ellipse at 70% 40%, #2a1608 0%, #0b0a14 40%, var(--void) 75%);
+  }
+  main {
+    position: relative; z-index: 1;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+  }
+  .wrap { max-width: 1180px; margin: 0 auto; }
+  section {
+    min-height: 92vh;
+    display: flex; align-items: center;
+    padding-block: 72px;
+  }
+  .panel {
+    width: 100%;
+    max-width: 540px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 32px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    display: grid; gap: 20px;
+    min-width: 0;
+  }
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--accretion);
+    margin: 0;
+  }
+  h1, h2 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    line-height: 1.05;
+    text-wrap: balance;
+    margin: 0;
+  }
+  h1 { font-size: clamp(34px, 7vw, 72px); }
+  h2 { font-size: clamp(22px, 3.4vw, 34px); }
+  h3 { font-size: 18px; font-weight: 600; margin: 0; line-height: 1.3; text-wrap: balance; }
+  p { margin: 0; color: var(--dim); max-width: 62ch; }
+  .lede { font-size: 18px; color: var(--star); }
+
+  /* hero */
+  .hero .panel { background: transparent; border-color: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; padding-inline: 0; max-width: 620px; }
+  .hero h1 { text-shadow: 0 0 40px rgba(255, 179, 92, 0.25); }
+  .notice {
+    font-family: var(--font-mono); font-size: 12px; color: var(--ice);
+    border: 1px dashed rgba(143, 216, 255, 0.4); border-radius: 4px;
+    padding: 10px 12px; max-width: 46ch;
+  }
+  .scroll-cue { font-family: var(--font-mono); font-size: 12px; color: var(--dim); letter-spacing: 0.1em; text-transform: uppercase; }
+
+  /* object caption beside each panel */
+  .catalog {
+    font-family: var(--font-mono); font-size: 12px; color: var(--dim);
+    border-top: 1px solid var(--line); padding-top: 14px;
+    display: grid; grid-template-columns: auto 1fr; gap: 4px 16px;
+    font-variant-numeric: tabular-nums;
+  }
+  .catalog dt { color: var(--dim); opacity: 0.75; text-transform: uppercase; letter-spacing: 0.08em; }
+  .catalog dd { margin: 0; color: var(--star); min-width: 0; }
+
+  .stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; max-width: 360px; }
+  .ph { color: var(--ice); font-style: italic; }
+  .stats.stats-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); max-width: 420px; }
+
+  /* booklet reader */
+  .features { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; }
+  .features li { color: var(--dim); padding-left: 16px; position: relative; }
+  .features li::before { content: ""; position: absolute; left: 0; top: 0.65em; width: 6px; height: 6px; border-radius: 50%; background: var(--ice); }
+  .features b { color: var(--star); font-weight: 600; }
+  .warn { font-family: var(--font-mono); font-size: 12px; color: #ff8a7a; }
+  .log p a { color: var(--accretion); text-decoration: none; white-space: nowrap; }
+  .log p a:hover { text-decoration: underline; }
+  .btn-accent { border-color: var(--accretion); background: rgba(255, 179, 92, 0.12); }
+  .reader { display: grid; gap: 10px; }
+  .reader-bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .reader-bar .btn { padding: 6px 12px; }
+  .reader-page { font-family: var(--font-mono); font-size: 13px; color: var(--dim); display: flex; align-items: center; gap: 6px; font-variant-numeric: tabular-nums; }
+  .reader-page input { width: 56px; font: inherit; color: var(--star); background: rgba(255, 255, 255, 0.04); border: 1px solid var(--line); border-radius: 4px; padding: 5px 6px; }
+  #read-chapter { flex: 1 1 180px; min-width: 0; font: 13px var(--font-body); color: var(--star); background: var(--void); border: 1px solid var(--line); border-radius: 4px; padding: 6px 8px; }
+  .reader-stage { position: relative; aspect-ratio: 894 / 1341; max-width: 100%; background: #fffdf7; border-radius: 4px; overflow: hidden; }
+  .reader-stage canvas { display: block; width: 100%; height: 100%; }
+  .reader-status { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; padding: 24px; margin: 0; max-width: none; font-family: var(--font-mono); font-size: 13px; color: #555; background: #fffdf7; }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  .stat { display: grid; gap: 2px; }
+  .stat b { font-family: var(--font-display); font-size: 26px; color: var(--accretion); font-variant-numeric: tabular-nums; }
+  .stat span { font-size: 12px; color: var(--dim); text-transform: uppercase; letter-spacing: 0.08em; }
+
+  /* accomplishment log */
+  .log { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
+  .log li {
+    display: grid; grid-template-columns: 56px 1fr; gap: 16px;
+    padding-block: 16px; border-top: 1px solid var(--line);
+  }
+  .log li:first-child { border-top: 0; padding-top: 4px; }
+  .log time { font-family: var(--font-mono); font-size: 13px; color: var(--accretion); padding-top: 2px; font-variant-numeric: tabular-nums; }
+  .log.dated li { grid-template-columns: 64px 1fr; }
+  .log time small { display: block; font-size: 11px; color: var(--dim); }
+  .tag.upcoming { color: var(--accretion); border-color: rgba(255, 179, 92, 0.45); }
+  .log .body { display: grid; gap: 6px; min-width: 0; }
+  .tag {
+    justify-self: start;
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--ice); border: 1px solid rgba(143, 216, 255, 0.35); border-radius: 999px; padding: 1px 9px;
+  }
+  .ex { font-family: var(--font-mono); font-size: 10px; color: var(--ice); opacity: 0.8; text-transform: uppercase; letter-spacing: 0.1em; margin-left: 6px; vertical-align: middle; }
+
+  /* contact */
+  .contact-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+  .addr { font-family: var(--font-mono); font-size: 15px; color: var(--star); user-select: all; overflow-wrap: anywhere; }
+  .btn, .link {
+    font: 500 14px var(--font-body);
+    color: var(--star); background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--line); border-radius: 4px;
+    padding: 8px 14px; cursor: pointer; text-decoration: none;
+    transition: border-color .2s, background .2s;
+  }
+  .btn:hover, .link:hover { border-color: var(--accretion); background: rgba(255, 179, 92, 0.08); }
+  :focus-visible { outline: 2px solid var(--ice); outline-offset: 3px; }
+
+  /* audio dock */
+  .dock {
+    position: fixed; z-index: 5;
+    right: calc(16px + env(safe-area-inset-right, 0px));
+    bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+    display: flex; align-items: center; gap: 12px;
+    background: var(--panel); border: 1px solid var(--line); border-radius: 999px;
+    padding: 8px 16px 8px 8px;
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  }
+  #play {
+    width: 40px; height: 40px; border-radius: 50%;
+    border: 1px solid var(--accretion); background: rgba(255, 179, 92, 0.12);
+    color: var(--accretion); cursor: pointer; display: grid; place-items: center; padding: 0;
+  }
+  #play svg { width: 16px; height: 16px; fill: currentColor; }
+  .dock-label { font-family: var(--font-mono); font-size: 11px; color: var(--dim); letter-spacing: 0.08em; text-transform: uppercase; white-space: nowrap; }
+  .dock-label b { color: var(--star); font-weight: 500; }
+  #vol { width: 84px; accent-color: var(--accretion); }
+  .eq { display: flex; gap: 2px; align-items: flex-end; height: 14px; }
+  .eq i { width: 3px; background: var(--accretion); height: 3px; border-radius: 1px; transition: height .3s; }
+  .playing .eq i { animation: eq 1.8s ease-in-out infinite; }
+  .playing .eq i:nth-child(2) { animation-delay: -.6s; }
+  .playing .eq i:nth-child(3) { animation-delay: -1.2s; }
+  @keyframes eq { 0%,100% { height: 3px } 50% { height: 14px } }
+
+  footer { padding-block: 32px 96px; font-family: var(--font-mono); font-size: 12px; color: var(--dim); }
+
+  @media (max-width: 720px) {
+    section { min-height: 88vh; align-items: flex-end; padding-block: 48px; }
+    .hero { align-items: center; }
+    .panel { padding: 22px; }
+    .hero .panel { padding-inline: 0; }
+    .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .stat b { font-size: 20px; }
+    .dock-label { display: none; }
+    #vol { width: 70px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .playing .eq i { animation: none; height: 8px; }
+  }
+</style>
+
+<canvas id="sky" aria-hidden="true"></canvas>
+
+<main>
+  <div class="wrap">
+
+    <section class="hero" data-stop="0">
+      <div class="panel">
+        <p class="eyebrow">Portfolio · Mission log</p>
+        <h1>Beau Parkins</h1>
+        <p class="lede">Student, aspiring astrophysicist and aspiring game developer from London.</p>
+        <p class="scroll-cue">Scroll to travel ↓</p>
+      </div>
+    </section>
+
+    <section data-stop="1">
+      <div class="panel">
+        <p class="eyebrow">About</p>
+        <h2>Event horizon</h2>
+        <p>Born and raised in London. I care about the technology that's moving space travel forward, and about orbital mechanics. Right now I'm working towards a good grade in Edexcel GCSE Astronomy.</p>
+        <div class="stats">
+          <div class="stat"><b id="age">14</b><span>Years old</span></div>
+          <div class="stat"><b>6</b><span>Projects and counting</span></div>
+        </div>
+        <dl class="catalog">
+          <dt>Object</dt><dd>TON 618, ultramassive black hole</dd>
+          <dt>Mass</dt><dd>≈ 40–66 billion M☉</dd>
+          <dt>Constellation</dt><dd>Canes Venatici</dd>
+          <dt>Light travel</dt><dd>≈ 10.8 billion years</dd>
+        </dl>
+      </div>
+    </section>
+
+    <section data-stop="ton-guide">
+      <div class="panel">
+        <p class="eyebrow">Passion project · Field guide</p>
+        <h2>TON 618: a field guide to a monster</h2>
+        <p>A short illustrated guide I made to the black hole at the start of this page. It explains why TON 618 is a quasar and not a star, how big it really is, and why its light is a look back in time.</p>
+        <div class="stats stats-3">
+          <div class="stat"><b>140T</b><span>× brighter than the Sun</span></div>
+          <div class="stat"><b>1,300</b><span>AU horizon radius</span></div>
+          <div class="stat"><b>1957</b><span>First catalogued</span></div>
+        </div>
+        <div class="contact-row">
+          <button class="btn btn-accent" id="ton-open" type="button">Read the guide</button>
+          <a class="link" href="ton-618.pdf" target="_blank" rel="noopener">Open full PDF ↗</a>
+        </div>
+        <div class="reader" id="ton-reader" hidden>
+          <div class="reader-bar">
+            <button class="btn" id="ton-prev" type="button" aria-label="Previous page">←</button>
+            <label class="reader-page"><span class="sr">Page</span><input id="ton-num" type="number" min="1" max="6" value="1" inputmode="numeric"> / <span id="ton-total">6</span></label>
+            <button class="btn" id="ton-next" type="button" aria-label="Next page">→</button>
+            <select id="ton-chapter" aria-label="Jump to chapter">
+              <option value="1">Cover</option>
+              <option value="2">01 · Meet the beast</option>
+              <option value="3">02 · By the numbers</option>
+              <option value="4">03 · Scale check</option>
+              <option value="5">04 · A time machine</option>
+              <option value="6">05 · The open question</option>
+            </select>
+          </div>
+          <div class="reader-stage" id="ton-stage" tabindex="0" aria-label="Guide page, use arrow keys to turn" style="aspect-ratio: 952 / 1233; background: var(--void);">
+            <canvas id="ton-canvas"></canvas>
+            <p class="reader-status" id="ton-status">Loading the guide (8 MB)…</p>
+          </div>
+        </div>
+        <dl class="catalog">
+          <dt>Object</dt><dd>TON 618 again, seen from above the disk</dd>
+        </dl>
+      </div>
+    </section>
+
+    <section data-stop="2">
+      <div class="panel">
+        <p class="eyebrow">System I · Projects</p>
+        <h2>Things I built</h2>
+        <ol class="log">
+          <li><time>2026</time><div class="body"><h3>Starfield Portfolio</h3><p>This website: a 3D space portfolio with a live-rendered TON 618 and a soundtrack generated in the browser.</p><span class="tag">Web</span></div></li>
+          <li><time>2026</time><div class="body"><h3>Lights Out Delivery</h3><p>A first-person night-shift horror game inspired by Five Nights at Freddy's. Survive five nights on an empty motorway until 6 AM. <a href="https://beauarthurparkins.github.io/lights-out-delivery/" target="_blank" rel="noopener">Play it ↗</a></p><span class="tag">Game dev</span></div></li>
+          <li><time class="ph">[Year]</time><div class="body"><h3>Edexcel GCSE Astronomy</h3><p class="ph">[In progress. Add your observation project or coursework here, and your final grade once you have it.]</p><span class="tag">Astronomy</span></div></li>
+        </ol>
+        <dl class="catalog">
+          <dt>Object</dt><dd>Ringed gas giant (imagined)</dd>
+        </dl>
+      </div>
+    </section>
+
+    <section data-stop="booklet">
+      <div class="panel">
+        <p class="eyebrow">Passion project · Booklet</p>
+        <h2>Everything Nuclear</h2>
+        <p><em>The Absolutely Enormous Book of Everything Nuclear</em> is an illustrated guide I made. It covers atoms, radiation, reactors, the history of the bomb, Chernobyl and Fukushima, and nuclear careers, along with a lot of ridiculous questions answered with real physics.</p>
+        <div class="stats stats-3">
+          <div class="stat"><b>199</b><span>Pages</span></div>
+          <div class="stat"><b>14</b><span>Chapters</span></div>
+          <div class="stat"><b>1</b><span>Banana</span></div>
+        </div>
+        <div class="contact-row">
+          <button class="btn btn-accent" id="read-open" type="button">Read the booklet</button>
+          <a class="link" href="everything-nuclear.pdf" target="_blank" rel="noopener">Open full PDF ↗</a>
+        </div>
+        <div class="reader" id="reader" hidden>
+          <div class="reader-bar">
+            <button class="btn" id="read-prev" type="button" aria-label="Previous page">←</button>
+            <label class="reader-page"><span class="sr">Page</span><input id="read-num" type="number" min="1" max="199" value="1" inputmode="numeric"> / <span id="read-total">199</span></label>
+            <button class="btn" id="read-next" type="button" aria-label="Next page">→</button>
+            <select id="read-chapter" aria-label="Jump to chapter">
+              <option value="1">Cover</option>
+              <option value="4">Contents</option>
+              <option value="9">1 · The Atom Is Mostly Nothing</option>
+              <option value="21">2 · The Radioactive Celebrities</option>
+              <option value="36">3 · Radiation, Explained Without Panicking</option>
+              <option value="49">4 · Splitting and Squishing</option>
+              <option value="61">5 · Nuclear Power</option>
+              <option value="82">6 · The Bomb: A History</option>
+              <option value="96">7 · What a Nuclear Explosion Actually Does</option>
+              <option value="109">8 · When Things Went Wrong</option>
+              <option value="121">9 · Chernobyl</option>
+              <option value="141">10 · Fukushima</option>
+              <option value="152">11 · Fear vs Facts</option>
+              <option value="163">12 · Nuclear Jobs</option>
+              <option value="176">13 · The Weird and Wonderful Atomic Age</option>
+              <option value="188">14 · The Lightning Round</option>
+            </select>
+          </div>
+          <div class="reader-stage" id="read-stage" tabindex="0" aria-label="Booklet page, use arrow keys to turn">
+            <canvas id="read-canvas"></canvas>
+            <p class="reader-status" id="read-status">Loading the booklet (14 MB)…</p>
+          </div>
+        </div>
+        <dl class="catalog">
+          <dt>Object</dt><dd>Uranium-green world (imagined)</dd>
+        </dl>
+      </div>
+    </section>
+
+    <section data-stop="sandbox">
+      <div class="panel">
+        <p class="eyebrow">Passion project · Game</p>
+        <h2>Gravity Sandbox</h2>
+        <p>A gravity playground I built. Place stars and planets, fling asteroids, and watch orbits, slingshots and collisions play out under real N-body gravity. Then land on any world in 3D and explore it on foot.</p>
+        <ul class="features">
+          <li><b>Real conditions.</b> Each world's gravity, temperature, air and oceans come from the simulation, so a jump on a small asteroid can carry you into space.</li>
+          <li><b>Vehicles.</b> A rover, a hoverbike and a lander you can fly to orbit, then on to other worlds in system flight.</li>
+          <li><b>Domed bases.</b> Every world has a glass-domed station with an airlock, residents to talk to, missions, upgrades and day–night routines.</li>
+          <li><b>Built from scratch.</b> Plain JavaScript and Three.js, with every sound synthesized live in the browser.</li>
+        </ul>
+        <div class="stats stats-3">
+          <div class="stat"><b>3</b><span>Vehicles</span></div>
+          <div class="stat"><b>34</b><span>Residents per dome</span></div>
+          <div class="stat"><b>5</b><span>Station types</span></div>
+        </div>
+        <div class="contact-row">
+          <a class="link" href="https://github.com/BeauArthurParkins/gravity-sandbox" target="_blank" rel="noopener">View on GitHub ↗</a>
+          <span class="tag">JavaScript · Three.js</span>
+        </div>
+        <dl class="catalog">
+          <dt>Object</dt><dd>Ocean world with an orbiting moon (imagined)</dd>
+        </dl>
+      </div>
+    </section>
+
+    <section data-stop="lights-out">
+      <div class="panel">
+        <p class="eyebrow">Passion project · Horror game</p>
+        <h2>Lights Out Delivery</h2>
+        <p>A first-person night-shift horror game that runs in the browser. You drive the night shift for Hollow Creek Parcel Co. while the van drives itself down an empty motorway. You have the mirrors, the headlights, the door locks and a CB radio that sometimes tells the truth. Survive until 6 AM.</p>
+        <ul class="features">
+          <li><b>Five nights, five threats.</b> The Passenger, the Hitchhiker, Static Man, the Other Van and the Lodger. Most are easier to hear than to see.</li>
+          <li><b>A rhythm-game radio.</b> Hit notes in time to decode warnings about what's coming.</li>
+          <li><b>Gas station stops at 3 AM.</b> Walk around in first person and buy from a tech tree of 10 upgrades at the till.</li>
+          <li><b>Secrets.</b> Five hidden lore tapes, two endings and a Custom Night with sliders for every threat.</li>
+        </ul>
+        <div class="stats stats-3">
+          <div class="stat"><b>5</b><span>Nights</span></div>
+          <div class="stat"><b>2</b><span>Endings</span></div>
+          <div class="stat"><b>6 AM</b><span>Survive until</span></div>
+        </div>
+        <div class="contact-row">
+          <a class="btn btn-accent" href="https://beauarthurparkins.github.io/lights-out-delivery/" target="_blank" rel="noopener">Play it ↗</a>
+          <a class="link" href="https://github.com/BeauArthurParkins/lights-out-delivery" target="_blank" rel="noopener">View on GitHub ↗</a>
+        </div>
+        <p class="warn">Best on a computer with a keyboard, mouse and headphones. Contains loud jump scares.</p>
+        <dl class="catalog">
+          <dt>Object</dt><dd>Dark world with a red glow (imagined)</dd>
+        </dl>
+      </div>
+    </section>
+
+    <section data-stop="3">
+      <div class="panel">
+        <p class="eyebrow">System II · Recognition</p>
+        <h2>Awards &amp; honors</h2>
+        <ol class="log">
+          <li><time class="ph">[Year]</time><div class="body"><h3 class="ph">[Award name]</h3><p class="ph">[For prizes, certificates or competition results. Say who gave it and what it was for, e.g. a school science prize or a coding competition.]</p><span class="tag ph">[Placing]</span></div></li>
+          <li><time class="ph">[Year]</time><div class="body"><h3 class="ph">[Award name]</h3><p class="ph">[Room for a second award as you earn one.]</p><span class="tag ph">[Placing]</span></div></li>
+        </ol>
+        <dl class="catalog">
+          <dt>Object</dt><dd>Molten lava world (imagined)</dd>
+        </dl>
+      </div>
+    </section>
+
+    <section data-stop="4">
+      <div class="panel">
+        <p class="eyebrow">System III · Growth</p>
+        <h2>Milestones</h2>
+        <ol class="log">
+          <li><time class="ph">[Year]</time><div class="body"><h3 class="ph">[Course or skill]</h3><p class="ph">[For things you've learned: a course, a coding language, a new tool. Say what you can do now that you couldn't before.]</p><span class="tag">Learning</span></div></li>
+          <li><time class="ph">[Year]</time><div class="body"><h3 class="ph">[Personal milestone]</h3><p class="ph">[For goals you set and reached outside school, e.g. your first telescope observation or finishing a big project.]</p><span class="tag">Personal</span></div></li>
+        </ol>
+        <dl class="catalog">
+          <dt>Object</dt><dd>Ice world with thin atmosphere (imagined)</dd>
+        </dl>
+      </div>
+    </section>
+
+    <section data-stop="5">
+      <div class="panel">
+        <p class="eyebrow">System IV · Talks</p>
+        <h2>Lectures attended</h2>
+        <p>Talks I've been to, mostly at the Royal Institution in London.</p>
+        <ol class="log dated">
+          <li data-date="2026-10-17"><time datetime="2026-10-17">17 Oct<small>2026</small></time><div class="body"><h3>The ancient cosmos: the James Webb Space Telescope's new revelations</h3><p>Dr Maggie Aderin-Pocock · Royal Institution</p><span class="tag status">Attended</span></div></li>
+          <li data-date="2026-11-14"><time datetime="2026-11-14">14 Nov<small>2026</small></time><div class="body"><h3>Studying in the US: an insight</h3><p>EducationUSA Fulbright at Which Uni Live · Kensington Olympia</p><span class="tag status">Attended</span></div></li>
+          <li data-date="2026-11-14"><time datetime="2026-11-14">14 Nov<small>2026</small></time><div class="body"><h3>How to grow a quantum computer</h3><p>Dr Felix Flicker · Royal Institution</p><span class="tag status">Attended</span></div></li>
+          <li data-date="2026-11-28"><time datetime="2026-11-28">28 Nov<small>2026</small></time><div class="body"><h3>Introduction to Physics and Astrophysics at A level and beyond</h3><p>Oxford Physics · Online</p><span class="tag status">Attended</span></div></li>
+          <li data-date="2026-12-12"><time datetime="2026-12-12">12 Dec<small>2026</small></time><div class="body"><h3>Christmas Lectures</h3><p>Dr Jim Al-Khalili · Royal Institution</p><span class="tag status">Attended</span></div></li>
+        </ol>
+        <dl class="catalog">
+          <dt>Object</dt><dd>Crystal world with glowing fissures (imagined)</dd>
+        </dl>
+      </div>
+    </section>
+
+    <section data-stop="6">
+      <div class="panel">
+        <p class="eyebrow">Broadcast · YouTube</p>
+        <h2>Oddly Deep - Science</h2>
+        <p>A YouTube channel of short science videos I'm building. The shorts are made by Claude, an AI, and I run everything else: picking topics, publishing and growing the channel.</p>
+        <div class="contact-row">
+          <a class="link" href="https://www.youtube.com/@oddlydeep-science" target="_blank" rel="noopener">Watch on YouTube ↗</a>
+          <span class="tag">Building now</span>
+        </div>
+        <dl class="catalog">
+          <dt>Channel</dt><dd>@oddlydeep-science</dd>
+          <dt>Format</dt><dd>Science shorts</dd>
+          <dt>Object</dt><dd>Violet storm world (imagined)</dd>
+        </dl>
+      </div>
+    </section>
+
+    <section data-stop="7">
+      <div class="panel">
+        <p class="eyebrow">Transmission</p>
+        <h2>Get in touch</h2>
+        <p>Open to collaborations, questions, and new missions.</p>
+        <div class="contact-row">
+          <span class="addr" id="addr">beauarthurparkins@gmail.com</span>
+          <button class="btn" id="copy" type="button">Copy email</button>
+        </div>
+      </div>
+    </section>
+
+    <footer>Rendered live in your browser · Soundtrack generated on the fly</footer>
+  </div>
+</main>
+
+<div class="dock" id="dock">
+  <button id="play" type="button" aria-label="Play ambient music" aria-pressed="false">
+    <svg viewBox="0 0 16 16" id="icon"><path d="M4 2l10 6-10 6z"/></svg>
+  </button>
+  <div class="eq" aria-hidden="true"><i></i><i></i><i></i></div>
+  <span class="dock-label">Ambient · <b>Deep field</b></span>
+  <input id="vol" type="range" min="0" max="1" step="0.01" value="0.6" aria-label="Music volume">
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(() => {
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- age, counted up each 4 January ---------- */
+  {
+    const now = new Date();
+    let age = now.getFullYear() - 2012;
+    if (now.getMonth() === 0 && now.getDate() < 4) age--;
+    document.getElementById('age').textContent = age;
+
+    // lectures still ahead show as Upcoming until their day arrives
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    document.querySelectorAll('li[data-date]').forEach(li => {
+      const [y, m, d] = li.dataset.date.split('-').map(Number);
+      if (new Date(y, m - 1, d) > today) {
+        const tag = li.querySelector('.status');
+        tag.textContent = 'Upcoming'; tag.classList.add('upcoming');
+      }
+    });
+  }
+
+  /* ---------- PDF readers (pdf.js, loaded on first open) ---------- */
+  const PDFJS = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/';
+  const loadScript = src => new Promise((ok, fail) => {
+    const s = document.createElement('script'); s.src = src; s.onload = ok; s.onerror = fail; document.head.appendChild(s);
+  });
+  let pdfjsReady = null;
+  // the worker script is loaded into the page so pdf.js parses on the main thread (cross-origin workers are blocked)
+  const loadPdfjs = () => pdfjsReady || (pdfjsReady = loadScript(PDFJS + 'pdf.min.js').then(() => loadScript(PDFJS + 'pdf.worker.min.js')));
+
+  function setupReader(p, url, readerId) {
+    const $ = id => document.getElementById(id);
+    const reader = $(readerId), stage = $(p + '-stage'), canvas = $(p + '-canvas'), status = $(p + '-status');
+    const num = $(p + '-num'), chapter = $(p + '-chapter');
+    let doc = null, page = 1, task = null, loading = null;
+
+    function open() {
+      reader.hidden = false;
+      if (loading) return loading;
+      loading = loadPdfjs()
+        .then(() => {
+          const t = pdfjsLib.getDocument({ url, disableRange: true, disableStream: true });
+          t.onProgress = e => { if (e.total) status.textContent = 'Loading… ' + Math.round(e.loaded / e.total * 100) + '%'; };
+          return t.promise;
+        })
+        .then(d => { doc = d; $(p + '-total').textContent = d.numPages; num.max = d.numPages; return show(1); })
+        .catch(() => { status.hidden = false; status.textContent = 'This PDF could not load here. Use "Open full PDF" instead.'; });
+      return loading;
+    }
+
+    function show(n) {
+      if (!doc) return;
+      page = Math.min(Math.max(1, n | 0), doc.numPages);
+      num.value = page;
+      let best = chapter.options[0];
+      for (const o of chapter.options) if (+o.value <= page) best = o;
+      chapter.value = best.value;
+      return doc.getPage(page).then(pg => {
+        if (task) task.cancel();
+        const base = pg.getViewport({ scale: 1 });
+        const scale = stage.clientWidth / base.width * Math.min(devicePixelRatio || 1, 2);
+        const vp = pg.getViewport({ scale });
+        canvas.width = vp.width; canvas.height = vp.height;
+        task = pg.render({ canvasContext: canvas.getContext('2d'), viewport: vp });
+        return task.promise.then(() => { status.hidden = true; }, () => {});
+      });
+    }
+
+    $(p + '-open').addEventListener('click', () => { open().then(() => stage.focus()); });
+    $(p + '-prev').addEventListener('click', () => show(page - 1));
+    $(p + '-next').addEventListener('click', () => show(page + 1));
+    num.addEventListener('change', () => show(+num.value));
+    chapter.addEventListener('change', () => show(+chapter.value));
+    stage.addEventListener('keydown', e => {
+      if (e.key === 'ArrowRight') { e.preventDefault(); show(page + 1); }
+      if (e.key === 'ArrowLeft') { e.preventDefault(); show(page - 1); }
+    });
+    let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => doc && !reader.hidden && show(page), 200); });
+  }
+  setupReader('read', 'everything-nuclear.pdf', 'reader');
+  setupReader('ton', 'ton-618.pdf', 'ton-reader');
+
+  /* ---------- copy email ---------- */
+  const copyBtn = document.getElementById('copy');
+  copyBtn.addEventListener('click', () => {
+    const text = document.getElementById('addr').textContent;
+    const done = () => { copyBtn.textContent = 'Copied'; setTimeout(() => copyBtn.textContent = 'Copy email', 1600); };
+    try {
+      navigator.clipboard.writeText(text).then(done, selectAddr);
+    } catch (e) { selectAddr(); }
+    function selectAddr() {
+      const r = document.createRange(); r.selectNodeContents(document.getElementById('addr'));
+      const s = getSelection(); s.removeAllRanges(); s.addRange(r);
+      copyBtn.textContent = 'Selected, press Ctrl+C';
+    }
+  });
+
+  /* ---------- ambient music (Web Audio, generated live) ---------- */
+  const Music = (() => {
+    let ctx, master, padBus, fx, timers = [], playing = false;
+    const mtof = m => 440 * Math.pow(2, (m - 69) / 12);
+    const chords = [
+      [50, 57, 62, 65, 69],   // D minor add9 colour
+      [46, 53, 58, 62, 65],   // B flat
+      [43, 50, 55, 58, 62],   // G minor
+      [45, 52, 57, 60, 64],   // A minor
+    ];
+    const bells = [74, 77, 79, 81, 84, 86, 89];
+    let ci = 0;
+
+    function impulse(seconds) {
+      const len = ctx.sampleRate * seconds;
+      const buf = ctx.createBuffer(2, len, ctx.sampleRate);
+      for (let c = 0; c < 2; c++) {
+        const d = buf.getChannelData(c);
+        for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3);
+      }
+      return buf;
+    }
+
+    function init() {
+      ctx = new (window.AudioContext || window.webkitAudioContext)();
+      master = ctx.createGain(); master.gain.value = 0;
+      const comp = ctx.createDynamicsCompressor();
+      master.connect(comp).connect(ctx.destination);
+
+      const verb = ctx.createConvolver(); verb.buffer = impulse(6);
+      const wet = ctx.createGain(); wet.gain.value = 0.7;
+      verb.connect(wet).connect(master);
+      fx = verb;
+
+      const filter = ctx.createBiquadFilter();
+      filter.type = 'lowpass'; filter.frequency.value = 850; filter.Q.value = 0.6;
+      const lfo = ctx.createOscillator(); lfo.frequency.value = 0.04;
+      const lfoAmt = ctx.createGain(); lfoAmt.gain.value = 380;
+      lfo.connect(lfoAmt).connect(filter.frequency); lfo.start();
+
+      padBus = ctx.createGain(); padBus.gain.value = 0.5;
+      padBus.connect(filter);
+      filter.connect(master); filter.connect(verb);
+
+      // low drone on D
+      const sub = ctx.createOscillator(); sub.type = 'sine'; sub.frequency.value = mtof(38);
+      const subG = ctx.createGain(); subG.gain.value = 0.07;
+      sub.connect(subG).connect(master); sub.start();
+    }
+
+    function chord() {
+      const t = ctx.currentTime, notes = chords[ci++ % chords.length];
+      notes.forEach((m, i) => {
+        [-6, 6].forEach(det => {
+          const o = ctx.createOscillator();
+          o.type = i === 0 ? 'triangle' : 'sawtooth';
+          o.frequency.value = mtof(m); o.detune.value = det + (Math.random() * 4 - 2);
+          const g = ctx.createGain();
+          const peak = (i === 0 ? 0.05 : 0.022);
+          g.gain.setValueAtTime(0, t);
+          g.gain.linearRampToValueAtTime(peak, t + 6);
+          g.gain.setValueAtTime(peak, t + 13);
+          g.gain.linearRampToValueAtTime(0, t + 21);
+          o.connect(g).connect(padBus);
+          o.start(t); o.stop(t + 22);
+        });
+      });
+    }
+
+    function bell() {
+      if (!playing) return;
+      const t = ctx.currentTime;
+      const o = ctx.createOscillator(); o.type = 'sine';
+      o.frequency.value = mtof(bells[Math.floor(Math.random() * bells.length)]);
+      const g = ctx.createGain();
+      g.gain.setValueAtTime(0, t);
+      g.gain.linearRampToValueAtTime(0.035, t + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + 5);
+      const pan = ctx.createStereoPanner ? ctx.createStereoPanner() : null;
+      if (pan) { pan.pan.value = Math.random() * 1.4 - 0.7; o.connect(g).connect(pan).connect(fx); pan.connect(master); }
+      else { o.connect(g).connect(fx); }
+      o.start(t); o.stop(t + 5.2);
+      timers.push(setTimeout(bell, 2500 + Math.random() * 5500));
+    }
+
+    return {
+      get playing() { return playing; },
+      start(vol) {
+        if (!ctx) init();
+        ctx.resume();
+        playing = true;
+        master.gain.cancelScheduledValues(ctx.currentTime);
+        master.gain.setTargetAtTime(vol, ctx.currentTime, 1.5);
+        chord();
+        timers.push(setInterval(chord, 14000));
+        timers.push(setTimeout(bell, 3000));
+      },
+      stop() {
+        playing = false;
+        timers.forEach(id => { clearTimeout(id); clearInterval(id); }); timers = [];
+        if (ctx) master.gain.setTargetAtTime(0, ctx.currentTime, 0.6);
+      },
+      volume(v) { if (ctx && playing) master.gain.setTargetAtTime(v, ctx.currentTime, 0.2); }
+    };
+  })();
+
+  const playBtn = document.getElementById('play'), vol = document.getElementById('vol'), dock = document.getElementById('dock');
+  const icon = document.getElementById('icon');
+  playBtn.addEventListener('click', () => {
+    if (Music.playing) {
+      Music.stop();
+      icon.innerHTML = '<path d="M4 2l10 6-10 6z"/>';
+      playBtn.setAttribute('aria-label', 'Play ambient music'); playBtn.setAttribute('aria-pressed', 'false');
+      dock.classList.remove('playing');
+    } else {
+      Music.start(+vol.value * 0.8);
+      icon.innerHTML = '<path d="M3 2h3.5v12H3zM9.5 2H13v12H9.5z"/>';
+      playBtn.setAttribute('aria-label', 'Pause ambient music'); playBtn.setAttribute('aria-pressed', 'true');
+      dock.classList.add('playing');
+    }
+  });
+  vol.addEventListener('input', () => Music.volume(+vol.value * 0.8));
+
+  /* ---------- 3D scene ---------- */
+  if (!window.THREE) return;
+  const canvas = document.getElementById('sky');
+  let renderer;
+  try { renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false }); }
+  catch (e) { return; }
+  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 1.75));
+  renderer.setClearColor(0x04050a);
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 4000);
+
+  const NOISE = `
+    float hash(vec3 p){p=fract(p*0.3183099+.1);p*=17.0;return fract(p.x*p.y*p.z*(p.x+p.y+p.z));}
+    float noise(vec3 x){vec3 i=floor(x);vec3 f=fract(x);f=f*f*(3.-2.*f);
+      return mix(mix(mix(hash(i),hash(i+vec3(1,0,0)),f.x),mix(hash(i+vec3(0,1,0)),hash(i+vec3(1,1,0)),f.x),f.y),
+                 mix(mix(hash(i+vec3(0,0,1)),hash(i+vec3(1,0,1)),f.x),mix(hash(i+vec3(0,1,1)),hash(i+vec3(1,1,1)),f.x),f.y),f.z);}
+    float fbm(vec3 p){float v=0.,a=.5;for(int i=0;i<5;i++){v+=a*noise(p);p*=2.03;a*=.5;}return v;}
+  `;
+
+  /* stars */
+  {
+    const N = 6000, pos = new Float32Array(N * 3), col = new Float32Array(N * 3), size = new Float32Array(N);
+    const tints = [[1, 1, 1], [0.75, 0.85, 1], [1, 0.85, 0.65], [0.9, 0.95, 1]];
+    for (let i = 0; i < N; i++) {
+      const r = 600 + Math.random() * 1400, th = Math.random() * Math.PI * 2, ph = Math.acos(Math.random() * 2 - 1);
+      pos[i * 3] = r * Math.sin(ph) * Math.cos(th); pos[i * 3 + 1] = r * Math.cos(ph); pos[i * 3 + 2] = r * Math.sin(ph) * Math.sin(th) - 150;
+      const t = tints[Math.floor(Math.random() * tints.length)], b = 0.4 + Math.random() * 0.6;
+      col[i * 3] = t[0] * b; col[i * 3 + 1] = t[1] * b; col[i * 3 + 2] = t[2] * b;
+      size[i] = Math.random() < 0.02 ? 6 : 1.5 + Math.random() * 2.2;
+    }
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    g.setAttribute('color', new THREE.BufferAttribute(col, 3));
+    g.setAttribute('size', new THREE.BufferAttribute(size, 1));
+    const m = new THREE.ShaderMaterial({
+      uniforms: { uTime: { value: 0 }, uPR: { value: renderer.getPixelRatio() } },
+      vertexShader: `attribute float size; attribute vec3 color; varying vec3 vC; varying float vTw; uniform float uTime; uniform float uPR;
+        void main(){ vC=color; vTw=0.75+0.25*sin(uTime*1.3+position.x*0.13+position.y*0.07);
+          gl_PointSize=size*uPR; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.); }`,
+      fragmentShader: `varying vec3 vC; varying float vTw; void main(){ float d=length(gl_PointCoord-.5); float a=smoothstep(.5,0.,d); gl_FragColor=vec4(vC*vTw,a*a); }`,
+      transparent: true, depthWrite: false, blending: THREE.AdditiveBlending
+    });
+    scene.add(new THREE.Points(g, m));
+  }
+
+  /* nebula backdrop */
+  const nebula = new THREE.Mesh(
+    new THREE.SphereGeometry(1900, 32, 32),
+    new THREE.ShaderMaterial({
+      side: THREE.BackSide, depthWrite: false,
+      uniforms: { uTime: { value: 0 } },
+      vertexShader: `varying vec3 vP; void main(){ vP=normalize(position); gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.); }`,
+      fragmentShader: NOISE + `varying vec3 vP; uniform float uTime;
+        void main(){ float n=fbm(vP*3.0+vec3(0.,0.,uTime*0.01)); float n2=fbm(vP*6.0+3.1);
+          vec3 c=mix(vec3(0.02,0.015,0.05), vec3(0.18,0.06,0.20), smoothstep(.45,.85,n));
+          c+=vec3(0.03,0.09,0.16)*smoothstep(.55,.9,n2);
+          gl_FragColor=vec4(c*0.9,1.); }`
+    })
+  );
+  scene.add(nebula);
+
+  /* TON 618 */
+  const BH = new THREE.Group(); scene.add(BH);
+  const R = 6;
+  BH.add(new THREE.Mesh(new THREE.SphereGeometry(R, 64, 64), new THREE.MeshBasicMaterial({ color: 0x000000 })));
+
+  const diskMat = (inner, outer, strength) => new THREE.ShaderMaterial({
+    uniforms: { uTime: { value: 0 }, uIn: { value: inner }, uOut: { value: outer }, uS: { value: strength } },
+    vertexShader: `varying vec2 vP; void main(){ vP=position.xy; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.); }`,
+    fragmentShader: NOISE + `varying vec2 vP; uniform float uTime,uIn,uOut,uS;
+      void main(){
+        float r=length(vP); float t=clamp((r-uIn)/(uOut-uIn),0.,1.);
+        float ang=atan(vP.y,vP.x);
+        float spin=uTime*(2.2/(0.4+t*2.5));
+        float n=fbm(vec3(cos(ang+spin)*3.0, sin(ang+spin)*3.0, r*0.35));
+        float streak=fbm(vec3(ang*6.0+spin*2.0, r*1.6, 1.0));
+        vec3 hot=vec3(1.0,0.96,0.88), mid=vec3(1.0,0.62,0.22), cool=vec3(0.55,0.12,0.04);
+        vec3 c=mix(hot,mid,smoothstep(0.,.35,t)); c=mix(c,cool,smoothstep(.35,1.,t));
+        float a=pow(1.-t,1.6)*smoothstep(0.,.04,t)*(0.45+0.75*n)*(0.7+0.5*streak);
+        gl_FragColor=vec4(c*a*uS, a);
+      }`,
+    transparent: true, depthWrite: false, side: THREE.DoubleSide, blending: THREE.AdditiveBlending
+  });
+  const disk = new THREE.Mesh(new THREE.RingGeometry(R * 1.35, R * 5, 200, 4), diskMat(R * 1.35, R * 5, 1.6));
+  disk.rotation.x = -Math.PI / 2 + 0.16; BH.add(disk);
+  // gravitationally lensed halo: the far side of the disk bent up and over the horizon, always facing the viewer
+  const halo = new THREE.Mesh(new THREE.RingGeometry(R * 1.04, R * 2.1, 200, 2), diskMat(R * 1.04, R * 2.1, 1.3));
+  BH.add(halo);
+  const glow = new THREE.Mesh(new THREE.PlaneGeometry(R * 16, R * 16), new THREE.ShaderMaterial({
+    vertexShader: `varying vec2 vU; void main(){ vU=uv-.5; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.); }`,
+    fragmentShader: `varying vec2 vU; void main(){ float d=length(vU)*2.; float a=exp(-d*5.)*0.55; gl_FragColor=vec4(vec3(1.,.55,.2)*a,a); }`,
+    transparent: true, depthWrite: false, blending: THREE.AdditiveBlending
+  }));
+  BH.add(glow);
+
+  /* planets */
+  const planetMat = (mode, a, b, c, lightDir) => new THREE.ShaderMaterial({
+    uniforms: { uTime: { value: 0 }, uMode: { value: mode }, uA: { value: new THREE.Color(a) }, uB: { value: new THREE.Color(b) }, uC: { value: new THREE.Color(c) }, uL: { value: lightDir } },
+    vertexShader: `varying vec3 vN; varying vec3 vO; varying vec3 vW;
+      void main(){ vO=normalize(position); vN=normalize(mat3(modelMatrix)*normal); vW=(modelMatrix*vec4(position,1.)).xyz; gl_Position=projectionMatrix*viewMatrix*vec4(vW,1.); }`,
+    fragmentShader: NOISE + `varying vec3 vN; varying vec3 vO; varying vec3 vW; uniform float uTime,uMode; uniform vec3 uA,uB,uC,uL;
+      void main(){
+        vec3 n=normalize(vN); float lam=max(dot(n,normalize(uL)),0.);
+        vec3 col; vec3 emit=vec3(0.);
+        if(uMode<0.5){ // banded gas giant
+          float w=fbm(vO*vec3(2.,8.,2.)+vec3(uTime*0.02,0.,0.));
+          float bands=sin(vO.y*22.+w*6.);
+          col=mix(uA,uB,smoothstep(-1.,1.,bands)); col=mix(col,uC,smoothstep(.55,.8,fbm(vO*5.+3.)));
+        } else if(uMode<1.5){ // lava world
+          float f=fbm(vO*4.5); float cracks=1.-smoothstep(0.02,0.09,abs(f-0.5));
+          col=mix(uA,uB,fbm(vO*9.));
+          emit=uC*cracks*(0.8+0.4*sin(uTime*1.5+f*20.));
+        } else { // ice world
+          float f=fbm(vO*3.5);
+          col=mix(uA,uB,smoothstep(.35,.65,f)); col=mix(col,vec3(1.),smoothstep(.75,.95,abs(vO.y)));
+        }
+        vec3 V=normalize(cameraPosition-vW); float rim=pow(1.-max(dot(n,V),0.),3.);
+        vec3 c=col*(0.06+1.05*lam)+emit+uB*rim*0.35*lam;
+        gl_FragColor=vec4(c,1.);
+      }`
+  });
+  const atmos = (radius, color, power) => new THREE.Mesh(new THREE.SphereGeometry(radius * 1.12, 48, 48), new THREE.ShaderMaterial({
+    uniforms: { uC: { value: new THREE.Color(color) }, uP: { value: power } },
+    vertexShader: `varying vec3 vN; varying vec3 vW; void main(){ vN=normalize(mat3(modelMatrix)*normal); vW=(modelMatrix*vec4(position,1.)).xyz; gl_Position=projectionMatrix*viewMatrix*vec4(vW,1.); }`,
+    fragmentShader: `varying vec3 vN; varying vec3 vW; uniform vec3 uC; uniform float uP;
+      void main(){ vec3 V=normalize(cameraPosition-vW); float f=pow(1.-abs(dot(normalize(vN),V)),uP); gl_FragColor=vec4(uC*f,f); }`,
+    transparent: true, depthWrite: false, side: THREE.BackSide, blending: THREE.AdditiveBlending
+  }));
+
+  const worlds = [];
+  function addWorld(pos, radius, mode, a, b, c, atmoColor, rings) {
+    const g = new THREE.Group(); g.position.copy(pos); scene.add(g);
+    const lightDir = pos.clone().negate().normalize().add(new THREE.Vector3(0, 0.25, 0.4)).normalize();
+    const mat = planetMat(mode, a, b, c, lightDir);
+    const body = new THREE.Mesh(new THREE.SphereGeometry(radius, 96, 96), mat);
+    body.rotation.z = 0.35; g.add(body);
+    g.add(atmos(radius, atmoColor, 2.6));
+    if (rings) {
+      const ring = new THREE.Mesh(new THREE.RingGeometry(radius * 1.45, radius * 2.4, 160, 1), new THREE.ShaderMaterial({
+        uniforms: { uIn: { value: radius * 1.45 }, uOut: { value: radius * 2.4 } },
+        vertexShader: `varying vec2 vP; void main(){ vP=position.xy; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.); }`,
+        fragmentShader: NOISE + `varying vec2 vP; uniform float uIn,uOut;
+          void main(){ float t=(length(vP)-uIn)/(uOut-uIn); float b=noise(vec3(t*60.,0.,0.))*0.6+noise(vec3(t*13.,4.,0.))*0.5;
+            float gap=smoothstep(.0,.03,abs(t-.62)); float a=b*gap*smoothstep(0.,.05,t)*smoothstep(1.,.9,t)*0.85;
+            gl_FragColor=vec4(vec3(0.95,0.82,0.62)*a,a); }`,
+        transparent: true, depthWrite: false, side: THREE.DoubleSide
+      }));
+      ring.rotation.x = -Math.PI / 2 + 0.42; ring.rotation.y = 0.2; g.add(ring);
+    }
+    worlds.push({ g, body, mat });
+    return g;
+  }
+  const W1 = new THREE.Vector3(70, -12, -110), W2 = new THREE.Vector3(-80, 18, -230), W3 = new THREE.Vector3(55, 26, -350);
+  addWorld(W1, 10, 0, 0xc98a54, 0xf1d3a4, 0x7a4528, 0xffc98a, true);
+  addWorld(W2, 6.5, 1, 0x1b120e, 0x3a2418, 0xff5a12, 0xff6a20, false);
+  addWorld(W3, 7.5, 2, 0x5f86b8, 0xd8ecff, 0xffffff, 0x8fd8ff, false);
+  const W6 = new THREE.Vector3(85, 28, -170);
+  addWorld(W6, 8, 0, 0x2c3a12, 0xc8e04a, 0xf4c21a, 0xb6f03c, false);
+  const W7 = new THREE.Vector3(-10, -34, -205);
+  addWorld(W7, 7, 0, 0x14507a, 0x4fa6c8, 0x5fb36a, 0x7fd0ff, false);
+  // the sandbox world gets a moon that actually orbits it
+  const moon = new THREE.Mesh(new THREE.SphereGeometry(1.6, 48, 48), planetMat(2, 0x8a8f99, 0xd6d9df, 0xffffff, W7.clone().negate().normalize()));
+  worlds[worlds.length - 1].g.add(moon);
+  const W8 = new THREE.Vector3(40, 40, -265);
+  addWorld(W8, 7.5, 2, 0x111216, 0x34373f, 0xffffff, 0xff2a2a, false);
+  const W5 = new THREE.Vector3(80, -6, -415);
+  addWorld(W5, 7, 1, 0x0d1a2e, 0x1f3550, 0x3ad6ff, 0x6fd9ff, false);
+  const W4 = new THREE.Vector3(-65, -16, -470);
+  addWorld(W4, 9, 0, 0x3a1d6e, 0x9b7ae0, 0x2fb7c9, 0xb58cff, false);
+
+  /* camera route: one stop per section */
+  const stops = [
+    { obj: new THREE.Vector3(0, 0, 0), r: R * 4.2, side: 1.0, up: 0.22, dist: 3.2 },   // hero: TON 618 wide
+    { obj: new THREE.Vector3(0, 0, 0), r: R * 2.6, side: 1.0, up: 0.10, dist: 3.0 },   // about: closer, flatter angle
+    { obj: new THREE.Vector3(0, 0, 0), r: R * 3.4, side: 1.0, up: 1.6, dist: 1.6 },    // TON 618 guide: looking down onto the disk
+    { obj: W1, r: 18, side: 1.0, up: 0.25, dist: 3.0 },
+    { obj: W6, r: 10.5, side: 1.0, up: 0.2, dist: 3.0 },                                 // Everything Nuclear booklet
+    { obj: W7, r: 11, side: 1.0, up: 0.25, dist: 3.0 },                                  // Gravity Sandbox
+    { obj: W8, r: 10, side: 1.0, up: 0.15, dist: 3.0 },                                  // Lights Out Delivery
+    { obj: W2, r: 8.5, side: 1.0, up: 0.15, dist: 3.2 },
+    { obj: W3, r: 10, side: 1.0, up: 0.3, dist: 3.0 },
+    { obj: W5, r: 9.5, side: 1.0, up: 0.2, dist: 3.1 },                                 // lectures
+    { obj: W4, r: 12, side: 1.0, up: 0.2, dist: 3.0 },                                  // YouTube channel
+    { obj: new THREE.Vector3(0, 0, -230), r: 200, side: 0.4, up: 0.35, dist: 1.6 },     // contact: pull back over the whole route
+  ];
+  const sections = [...document.querySelectorAll('section[data-stop]')];
+  function stopPose(s, narrow) {
+    const shift = narrow ? 0 : s.r * 1.05 * s.side;
+    const target = s.obj.clone().add(new THREE.Vector3(-shift, narrow ? s.r * 0.35 : 0, 0));
+    const pos = s.obj.clone().add(new THREE.Vector3(-shift * 0.55, s.r * s.up, s.r * s.dist * (narrow ? 1.35 : 1)));
+    return { pos, target };
+  }
+  function progress() {
+    const mid = scrollY + innerHeight * 0.5;
+    for (let i = 0; i < sections.length - 1; i++) {
+      const a = sections[i].offsetTop + sections[i].offsetHeight * 0.5;
+      const b = sections[i + 1].offsetTop + sections[i + 1].offsetHeight * 0.5;
+      if (mid < b || i === sections.length - 2) return i + Math.min(Math.max((mid - a) / (b - a), 0), 1);
+    }
+    return 0;
+  }
+  const ease = t => t * t * (3 - 2 * t);
+  const curPos = new THREE.Vector3(), curTarget = new THREE.Vector3();
+  let first = true, mx = 0, my = 0;
+  addEventListener('pointermove', e => { mx = e.clientX / innerWidth - 0.5; my = e.clientY / innerHeight - 0.5; });
+
+  function resize() {
+    const w = innerWidth, h = innerHeight;
+    renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
+  }
+  addEventListener('resize', resize); resize();
+
+  const clock = new THREE.Clock();
+  const speed = reduce ? 0.15 : 1;
+  function frame() {
+    const t = clock.getElapsedTime() * speed;
+    const narrow = innerWidth < 760;
+    const p = progress(), i = Math.min(Math.floor(p), stops.length - 2), f = ease(p - i);
+    const A = stopPose(stops[i], narrow), B = stopPose(stops[i + 1], narrow);
+    const pos = A.pos.lerp(B.pos, f), target = A.target.lerp(B.target, f);
+    pos.x += mx * 3; pos.y -= my * 2;
+    if (first) { curPos.copy(pos); curTarget.copy(target); first = false; }
+    const k = reduce ? 1 : 0.06;
+    curPos.lerp(pos, k); curTarget.lerp(target, k);
+    camera.position.copy(curPos); camera.lookAt(curTarget);
+
+    disk.material.uniforms.uTime.value = t;
+    halo.material.uniforms.uTime.value = t + 7.0;
+    halo.quaternion.copy(camera.quaternion);
+    glow.quaternion.copy(camera.quaternion);
+    nebula.material.uniforms.uTime.value = t;
+    worlds.forEach((w, n) => { w.body.rotation.y = t * (0.05 + n * 0.02); w.mat.uniforms.uTime.value = t; });
+    moon.position.set(Math.cos(t * 0.35) * 13, Math.sin(t * 0.35) * 2.5, Math.sin(t * 0.35) * 13);
+    scene.children[0].material.uniforms.uTime.value = t;
+
+    renderer.render(scene, camera);
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+</script>
+
+</body>
+</html>
