@@ -135,6 +135,18 @@
   .features li::before { content: ""; position: absolute; left: 0; top: 0.65em; width: 6px; height: 6px; border-radius: 50%; background: var(--ice); }
   .features b { color: var(--star); font-weight: 600; }
   .warn { font-family: var(--font-mono); font-size: 12px; color: #ff8a7a; }
+  .features code { font-family: var(--font-mono); font-size: 12px; color: var(--star); background: rgba(255, 255, 255, 0.06); padding: 1px 5px; border-radius: 3px; }
+  .inspo {
+    display: flex; gap: 12px; align-items: center; text-decoration: none; color: var(--star);
+    padding: 10px 12px; border: 1px solid var(--line); border-radius: 6px; background: rgba(255, 255, 255, 0.03);
+    transition: border-color .2s, background .2s;
+  }
+  .inspo:hover { border-color: #ff5a4f; background: rgba(255, 90, 79, 0.06); }
+  .inspo-play { flex: none; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: #e5332a; color: #fff; }
+  .inspo-play svg { width: 14px; height: 14px; fill: currentColor; }
+  .inspo-text { display: grid; gap: 1px; min-width: 0; font-size: 14px; }
+  .inspo-text span { font-size: 12px; color: var(--dim); }
+  .inspo-text .inspo-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accretion); }
   .log p a { color: var(--accretion); text-decoration: none; white-space: nowrap; }
   .log p a:hover { text-decoration: underline; }
   .btn-accent { border-color: var(--accretion); background: rgba(255, 179, 92, 0.12); }
@@ -441,6 +453,31 @@
         <p class="warn">Best on a computer with a keyboard, mouse and headphones. Contains loud jump scares.</p>
         <dl class="catalog">
           <dt>Object</dt><dd>Dark world with a red glow (imagined)</dd>
+        </dl>
+      </div>
+    </section>
+
+    <section data-stop="petri">
+      <div class="panel">
+        <p class="eyebrow">Passion project · Simulation</p>
+        <h2>Petri Selection</h2>
+        <p>A 3D natural-selection simulator. Little blobs hop out of the rim of a petri dish each morning to forage. Eat one piece of food to survive, eat two to reproduce. Offspring inherit speed, size and sense with small mutations, and the energy cost of each trait decides which ones win over the generations.</p>
+        <ul class="features">
+          <li><b>Real trade-offs.</b> Every step costs <code>size³ × speed² + sense</code> energy, so fast, big blobs run out quickly.</li>
+          <li><b>Predators and prey.</b> A blob 20% bigger can eat a smaller one, and smaller blobs flee from bigger ones they sense.</li>
+          <li><b>Live charts.</b> Population, average traits and a speed-vs-size scatter update every day.</li>
+          <li><b>Run your own experiments.</b> Change the food supply, day length, mutation strength and which traits can evolve.</li>
+        </ul>
+        <div class="contact-row">
+          <a class="btn btn-accent" href="https://claude.ai/artifact/63sWdApD6mRw78nSwFkLH2" target="_blank" rel="noopener">Try it ↗</a>
+          <span class="tag">Evolution · Three.js</span>
+        </div>
+        <a class="inspo" href="https://youtu.be/0ZGbIKd0XrM" target="_blank" rel="noopener">
+          <span class="inspo-play" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M5 3l8 5-8 5z"/></svg></span>
+          <span class="inspo-text"><span class="inspo-label">Inspired by</span><b>Simulating Natural Selection</b><span>Primer · YouTube ↗</span></span>
+        </a>
+        <dl class="catalog">
+          <dt>Object</dt><dd>Living green world (imagined)</dd>
         </dl>
       </div>
     </section>
@@ -1077,6 +1114,8 @@
   worlds[worlds.length - 1].g.add(moon);
   const W8 = new THREE.Vector3(40, 40, -265);
   addWorld(W8, 7.5, 2, 0x111216, 0x34373f, 0xffffff, 0xff2a2a, false);
+  const W9 = new THREE.Vector3(-40, -30, -300);
+  addWorld(W9, 7, 2, 0x2e6b3f, 0x9ad17b, 0xffffff, 0x9cf2b0, false);
   const W5 = new THREE.Vector3(80, -6, -415);
   addWorld(W5, 7, 1, 0x0d1a2e, 0x1f3550, 0x3ad6ff, 0x6fd9ff, false);
   const W4 = new THREE.Vector3(-65, -16, -470);
@@ -1091,6 +1130,7 @@
     { obj: W6, r: 10.5, side: 1.0, up: 0.2, dist: 3.0 },                                 // Everything Nuclear booklet
     { obj: W7, r: 11, side: 1.0, up: 0.25, dist: 3.0 },                                  // Gravity Sandbox
     { obj: W8, r: 10, side: 1.0, up: 0.15, dist: 3.0 },                                  // Lights Out Delivery
+    { obj: W9, r: 9.5, side: 1.0, up: 0.2, dist: 3.0 },                                  // Petri Selection
     { obj: W2, r: 8.5, side: 1.0, up: 0.15, dist: 3.2 },
     { obj: W3, r: 10, side: 1.0, up: 0.3, dist: 3.0 },
     { obj: W5, r: 9.5, side: 1.0, up: 0.2, dist: 3.1 },                                 // lectures
