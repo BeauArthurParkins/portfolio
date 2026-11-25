@@ -90,6 +90,21 @@
     border: 1px dashed rgba(143, 216, 255, 0.4); border-radius: 4px;
     padding: 10px 12px; max-width: 46ch;
   }
+  .sky {
+    display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 16px; align-items: center;
+    max-width: 440px; padding: 14px 16px;
+    background: var(--panel); border: 1px solid var(--line); border-radius: 6px;
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  }
+  .moon { width: 64px; height: 64px; display: block; }
+  .moon-dark { fill: #1a1d2b; stroke: rgba(160, 175, 230, 0.25); stroke-width: 1; }
+  .moon-lit { fill: #f1ead8; filter: drop-shadow(0 0 6px rgba(241, 234, 216, 0.35)); }
+  .sky-body { display: grid; gap: 2px; min-width: 0; }
+  .sky-body p { margin: 0; }
+  .sky-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accretion); }
+  .sky-phase { color: var(--star); font-weight: 600; font-size: 16px; }
+  .sky-tip { font-size: 14px; color: var(--dim); }
+  .sky-next { font-family: var(--font-mono); font-size: 12px; color: var(--dim); font-variant-numeric: tabular-nums; }
   .scroll-cue { font-family: var(--font-mono); font-size: 12px; color: var(--dim); letter-spacing: 0.1em; text-transform: uppercase; }
 
   /* object caption beside each panel */
@@ -214,6 +229,18 @@
         <p class="eyebrow">Portfolio · Mission log</p>
         <h1>Beau Parkins</h1>
         <p class="lede">Student, aspiring astrophysicist and aspiring game developer from London.</p>
+        <div class="sky" id="sky-panel">
+          <svg class="moon" viewBox="0 0 64 64" aria-hidden="true">
+            <circle cx="32" cy="32" r="28" class="moon-dark"/>
+            <path id="moon-lit" class="moon-lit" d=""/>
+          </svg>
+          <div class="sky-body">
+            <p class="sky-label">Tonight's sky over London · <span id="sky-date">—</span></p>
+            <p class="sky-phase"><span id="moon-name">Moon</span> · <span id="moon-illum">—</span> lit</p>
+            <p class="sky-tip" id="sky-tip"></p>
+            <p class="sky-next" id="sky-next"></p>
+          </div>
+        </div>
         <p class="scroll-cue">Scroll to travel ↓</p>
       </div>
     </section>
@@ -484,6 +511,44 @@
 <script>
 (() => {
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- tonight's Moon over London ---------- */
+  {
+    const SYNODIC = 29.530588853;                       // days, new moon to new moon
+    const EPOCH = Date.UTC(2000, 0, 6, 18, 14);         // a known new moon
+    const DAY = 86400000;
+    const now = Date.now();
+    const age = (((now - EPOCH) / DAY) % SYNODIC + SYNODIC) % SYNODIC;
+    const angle = 2 * Math.PI * age / SYNODIC;
+    const lit = (1 - Math.cos(angle)) / 2;
+    const names = [[1.84, 'New Moon'], [5.53, 'Waxing crescent'], [9.22, 'First quarter'], [12.91, 'Waxing gibbous'],
+                   [16.61, 'Full Moon'], [20.30, 'Waning gibbous'], [23.99, 'Last quarter'], [27.68, 'Waning crescent'], [99, 'New Moon']];
+    const name = names.find(([max]) => age < max)[1];
+
+    // lit shape as seen from the northern hemisphere: waxing is lit on the right
+    const r = 28, c = 32, rx = r * Math.abs(Math.cos(angle));
+    const waxing = age < SYNODIC / 2, crescent = lit < 0.5;
+    let d = `M ${c} ${c - r} A ${r} ${r} 0 0 1 ${c} ${c + r} A ${rx} ${r} 0 0 ${crescent ? 0 : 1} ${c} ${c - r} Z`;
+    const path = document.getElementById('moon-lit');
+    path.setAttribute('d', d);
+    if (!waxing) path.setAttribute('transform', `translate(${2 * c} 0) scale(-1 1)`);
+
+    const fmt = (t, o) => new Date(t).toLocaleDateString('en-GB', Object.assign({ timeZone: 'Europe/London' }, o));
+    document.getElementById('sky-date').textContent = fmt(now, { weekday: 'short', day: 'numeric', month: 'short' });
+    document.getElementById('moon-name').textContent = name;
+    document.getElementById('moon-illum').textContent = Math.round(lit * 100) + '%';
+    document.getElementById('sky-tip').textContent = lit < 0.25
+      ? 'Dark skies: a good night for faint targets like galaxies and nebulae.'
+      : lit < 0.75
+        ? 'Some moonlight: fine for planets, star clusters and the Moon\'s terminator.'
+        : 'Bright Moon: best for the Moon itself and the planets.';
+    const toFull = ((SYNODIC / 2 - age) + SYNODIC) % SYNODIC, toNew = SYNODIC - age;
+    const nextFull = fmt(now + toFull * DAY, { day: 'numeric', month: 'short' });
+    const nextNew = fmt(now + toNew * DAY, { day: 'numeric', month: 'short' });
+    document.getElementById('sky-next').textContent = toFull < toNew
+      ? `Next full Moon ${nextFull} · next new Moon ${nextNew}`
+      : `Next new Moon ${nextNew} · next full Moon ${nextFull}`;
+  }
 
   /* ---------- age, counted up each 4 January ---------- */
   {
