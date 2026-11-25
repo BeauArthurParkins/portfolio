@@ -105,6 +105,14 @@
   .sky-phase { color: var(--star); font-weight: 600; font-size: 16px; }
   .sky-tip { font-size: 14px; color: var(--dim); }
   .sky-next { font-family: var(--font-mono); font-size: 12px; color: var(--dim); font-variant-numeric: tabular-nums; }
+  .sky + .sky { margin-top: -10px; }
+  .dome { fill: #0b1020; stroke: rgba(160, 175, 230, 0.35); stroke-width: 1; }
+  .dome-ring { fill: none; stroke: rgba(160, 175, 230, 0.16); stroke-width: 0.8; stroke-dasharray: 2 2; }
+  .dome-dir { font: 600 7px var(--font-mono); fill: var(--dim); text-anchor: middle; }
+  .iss-track-full { fill: none; stroke: rgba(143, 216, 255, 0.3); stroke-width: 1.2; stroke-dasharray: 2 2; stroke-linecap: round; }
+  .iss-track { fill: none; stroke: var(--ice); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .iss-start { fill: var(--ice); }
+  .iss-peak { fill: #ffffff; filter: drop-shadow(0 0 3px rgba(143, 216, 255, 0.9)); }
   .scroll-cue { font-family: var(--font-mono); font-size: 12px; color: var(--dim); letter-spacing: 0.1em; text-transform: uppercase; }
 
   /* object caption beside each panel */
@@ -239,6 +247,24 @@
             <p class="sky-phase"><span id="moon-name">Moon</span> · <span id="moon-illum">—</span> lit</p>
             <p class="sky-tip" id="sky-tip"></p>
             <p class="sky-next" id="sky-next"></p>
+          </div>
+        </div>
+        <div class="sky" id="iss-panel">
+          <svg class="moon" viewBox="-7 -7 78 78" aria-label="Sky map of the next ISS pass, north at the top">
+            <circle cx="32" cy="32" r="28" class="dome"/>
+            <circle cx="32" cy="32" r="14" class="dome-ring"/>
+            <text x="32" y="-1" class="dome-dir">N</text><text x="32" y="70" class="dome-dir">S</text>
+            <text x="-3" y="35" class="dome-dir">E</text><text x="67" y="35" class="dome-dir">W</text>
+            <polyline id="iss-track-full" class="iss-track-full" points=""/>
+            <polyline id="iss-track" class="iss-track" points=""/>
+            <circle id="iss-start" class="iss-start" r="2.4" cx="-20" cy="-20"/>
+            <circle id="iss-peak" class="iss-peak" r="3" cx="-20" cy="-20"/>
+          </svg>
+          <div class="sky-body">
+            <p class="sky-label">ISS over London · next visible pass</p>
+            <p class="sky-phase" id="iss-when">Working out passes…</p>
+            <p class="sky-tip" id="iss-tip"></p>
+            <p class="sky-next" id="iss-now"></p>
           </div>
         </div>
         <p class="scroll-cue">Scroll to travel ↓</p>
@@ -509,6 +535,7 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/satellite.js@5.0.0/dist/satellite.min.js"></script>
 <script>
 (() => {
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -549,6 +576,123 @@
     document.getElementById('sky-next').textContent = toFull < toNew
       ? `Next full Moon ${nextFull} · next new Moon ${nextNew}`
       : `Next new Moon ${nextNew} · next full Moon ${nextFull}`;
+  }
+
+  /* ---------- ISS passes over London ---------- */
+  {
+    const $ = id => document.getElementById(id);
+    const when = $('iss-when'), tip = $('iss-tip'), nowLine = $('iss-now');
+    // Backup orbit (TLE) for when live data can't be fetched, e.g. on the claude.ai copy. Accurate for about 10 days.
+    const BACKUP_TLE = [
+      '1 25544U 98067A   26328.88031538  .00004718  00000+0  91905-4 0  9994',
+      '2 25544  51.6319 224.8621 0007433  61.9046 298.2693 15.49577477596662'
+    ];
+    const SOURCES = [
+      ['https://api.wheretheiss.at/v1/satellites/25544/tles?format=text', t => t.trim().split('\n').slice(-2)],
+      ['https://tle.ivanstanojevic.me/api/tle/25544', t => { const j = JSON.parse(t); return [j.line1, j.line2]; }]
+    ];
+    const LONDON = { latitude: 51.5072 * Math.PI / 180, longitude: -0.1276 * Math.PI / 180, height: 0.035 };
+    const DEG = 180 / Math.PI, EARTH_R = 6371, MIN_EL = 10;
+    const tz = { timeZone: 'Europe/London' };
+    const hhmm = t => new Date(t).toLocaleTimeString('en-GB', Object.assign({ hour: '2-digit', minute: '2-digit' }, tz));
+    const dayKey = t => new Date(t).toLocaleDateString('en-GB', tz);
+    const compass = az => ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'][Math.round(((az * DEG % 360) + 360) % 360 / 45) % 8];
+
+    const withTimeout = (p, ms) => Promise.race([p, new Promise((_, no) => setTimeout(() => no(new Error('timeout')), ms))]);
+    async function liveTle() {
+      for (const [url, parse] of SOURCES) {
+        try {
+          const res = await withTimeout(fetch(url, { cache: 'no-store' }), 5000);
+          if (!res.ok) continue;
+          const lines = parse(await res.text());
+          if (lines[0] && lines[0].startsWith('1 ') && lines[1] && lines[1].startsWith('2 ')) return lines;
+        } catch (e) { /* try the next source */ }
+      }
+      return null;
+    }
+
+    // low-precision Sun direction in the satellite's inertial frame (good to about a degree)
+    function sunDir(date) {
+      const n = date.getTime() / 86400000 + 2440587.5 - 2451545.0;
+      const g = (357.528 + 0.9856003 * n) / DEG;
+      const lam = (280.460 + 0.9856474 * n + 1.915 * Math.sin(g) + 0.020 * Math.sin(2 * g)) / DEG;
+      const eps = (23.439 - 0.0000004 * n) / DEG;
+      return { x: Math.cos(lam), y: Math.cos(eps) * Math.sin(lam), z: Math.sin(eps) * Math.sin(lam) };
+    }
+
+    function sample(satrec, t) {
+      const date = new Date(t);
+      const pv = satellite.propagate(satrec, date);
+      if (!pv.position) return null;
+      const gmst = satellite.gstime(date);
+      const look = satellite.ecfToLookAngles(LONDON, satellite.eciToEcf(pv.position, gmst));
+      const s = sunDir(date), r = pv.position;
+      const sunLook = satellite.ecfToLookAngles(LONDON, satellite.eciToEcf({ x: s.x * 1.496e8, y: s.y * 1.496e8, z: s.z * 1.496e8 }, gmst));
+      const along = r.x * s.x + r.y * s.y + r.z * s.z;
+      const perp = Math.hypot(r.x - along * s.x, r.y - along * s.y, r.z - along * s.z);
+      const sunlit = along > 0 || perp > EARTH_R;
+      return { t, az: look.azimuth, el: look.elevation * DEG, visible: sunlit && sunLook.elevation * DEG < -6 };
+    }
+
+    // scan five days ahead in 20-second steps and keep the passes you can actually see
+    function findPasses(satrec, from) {
+      const passes = []; let cur = null;
+      for (let t = from; t < from + 5 * 86400000; t += 20000) {
+        const p = sample(satrec, t);
+        if (p && p.el >= MIN_EL) { (cur = cur || []).push(p); }
+        else if (cur) { passes.push(cur); cur = null; }
+      }
+      return passes.map(pts => ({ pts, seen: pts.filter(p => p.visible) })).filter(p => p.seen.length >= 3);
+    }
+
+    const toXY = p => { const rr = (90 - p.el) / 90 * 28; return [32 - rr * Math.sin(p.az), 32 - rr * Math.cos(p.az)]; };
+    const pointsAttr = pts => pts.map(p => toXY(p).map(v => v.toFixed(1)).join(',')).join(' ');
+
+    function draw(pass) {
+      $('iss-track-full').setAttribute('points', pointsAttr(pass.pts));
+      $('iss-track').setAttribute('points', pointsAttr(pass.seen));
+      const peak = pass.seen.reduce((a, b) => (b.el > a.el ? b : a));
+      const [sx, sy] = toXY(pass.seen[0]), [px, py] = toXY(peak);
+      $('iss-start').setAttribute('cx', sx); $('iss-start').setAttribute('cy', sy);
+      $('iss-peak').setAttribute('cx', px); $('iss-peak').setAttribute('cy', py);
+      return peak;
+    }
+
+    async function run() {
+      if (!window.satellite) { when.textContent = 'Pass times could not load.'; return; }
+      const lines = (await liveTle()) || BACKUP_TLE;
+      const satrec = satellite.twoline2satrec(lines[0], lines[1]);
+      const ageDays = (Date.now() - (satrec.jdsatepoch - 2440587.5) * 86400000) / 86400000;
+      if (ageDays > 10) {
+        when.textContent = 'Orbit data needs refreshing';
+        tip.textContent = 'Live pass times are on beauarthurparkins.github.io/portfolio.';
+        return;
+      }
+      const passes = findPasses(satrec, Date.now());
+      if (!passes.length) {
+        when.textContent = 'No visible passes in the next 5 days';
+        tip.textContent = 'The ISS is only visible around dawn and dusk, when it is sunlit and your sky is dark.';
+      } else {
+        const p = passes[0], first = p.seen[0], last = p.seen[p.seen.length - 1];
+        const peak = draw(p);
+        const today = dayKey(Date.now()), tomorrow = dayKey(Date.now() + 86400000);
+        const day = dayKey(first.t) === today ? 'Today' : dayKey(first.t) === tomorrow ? 'Tomorrow'
+          : new Date(first.t).toLocaleDateString('en-GB', Object.assign({ weekday: 'short', day: 'numeric', month: 'short' }, tz));
+        const mins = Math.max(1, Math.round((last.t - first.t) / 60000));
+        when.textContent = `${day} · ${hhmm(first.t)} · ${mins} min`;
+        tip.textContent = `Look ${compass(first.az)}. It climbs to ${Math.round(peak.el)}° and fades out in the ${compass(last.az)}. A steady white light with no blinking.`;
+      }
+      const tick = () => {
+        const pv = satellite.propagate(satrec, new Date());
+        if (!pv.position) return;
+        const g = satellite.eciToGeodetic(pv.position, satellite.gstime(new Date()));
+        const lat = g.latitude * DEG, lon = g.longitude * DEG;
+        const kmh = Math.hypot(pv.velocity.x, pv.velocity.y, pv.velocity.z) * 3600;
+        nowLine.textContent = `Now ${Math.abs(lat).toFixed(1)}°${lat >= 0 ? 'N' : 'S'} ${Math.abs(lon).toFixed(1)}°${lon >= 0 ? 'E' : 'W'} · ${Math.round(g.height)} km up · ${Math.round(kmh).toLocaleString('en-GB')} km/h`;
+      };
+      tick(); setInterval(tick, 2000);
+    }
+    run().catch(() => { when.textContent = 'Pass times could not load.'; });
   }
 
   /* ---------- age, counted up each 4 January ---------- */
