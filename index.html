@@ -138,6 +138,24 @@
   .live-note { font-family: var(--font-mono); font-size: 11px; color: var(--dim); }
   .live-note a { color: var(--dim); }
   .live [hidden] { display: none !important; }
+
+  /* education and skills */
+  .subjects { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .subjects li { display: grid; gap: 1px; align-content: start; padding: 9px 12px 9px 22px; border: 1px solid var(--line); border-radius: 6px; background: rgba(255, 255, 255, 0.03); position: relative; min-width: 0; }
+  .subjects li b { font-weight: 600; color: var(--star); }
+  .subjects li span { font-size: 13px; color: var(--dim); }
+  .subjects li.core::before { content: ""; position: absolute; left: 9px; top: 17px; width: 6px; height: 6px; border-radius: 50%; background: var(--accretion); }
+  .sub-h { font: 500 12px var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--accretion); margin-bottom: -8px; }
+  .skill-row { display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: 12px; align-items: center; }
+  .skill-label { font-family: var(--font-mono); font-size: 12px; color: var(--dim); }
+  .chips { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+  .chips li { font-size: 14px; color: var(--star); border: 1px solid var(--line); border-radius: 999px; padding: 3px 12px; background: rgba(255, 255, 255, 0.03); }
+  .chips li.next { border-style: dashed; border-color: rgba(143, 216, 255, 0.5); color: var(--ice); }
+  .note { font-size: 14px; }
+  @media (max-width: 520px) {
+    .subjects { grid-template-columns: minmax(0, 1fr); }
+    .skill-row { grid-template-columns: minmax(0, 1fr); gap: 6px; }
+  }
   @media (prefers-reduced-motion: reduce) { .rocket-flame { animation: none; } }
   .scroll-cue { font-family: var(--font-mono); font-size: 12px; color: var(--dim); letter-spacing: 0.1em; text-transform: uppercase; }
 
@@ -594,8 +612,8 @@
         <p class="eyebrow">System II · Recognition</p>
         <h2>Awards &amp; honors</h2>
         <ol class="log">
-          <li><time class="ph">[Year]</time><div class="body"><h3 class="ph">[Award name]</h3><p class="ph">[For prizes, certificates or competition results. Say who gave it and what it was for, e.g. a school science prize or a coding competition.]</p><span class="tag ph">[Placing]</span></div></li>
-          <li><time class="ph">[Year]</time><div class="body"><h3 class="ph">[Award name]</h3><p class="ph">[Room for a second award as you earn one.]</p><span class="tag ph">[Placing]</span></div></li>
+          <li><time datetime="2026-10-10">2026<small>10 Oct</small></time><div class="body"><h3>Soyuz docking certificate</h3><p>Certificate of accomplishment for flying a simulated approach and docking of a Soyuz-TMA spacecraft to the International Space Station, at New Scientist Live in East London.</p><span class="tag">Certificate</span></div></li>
+          <li><time class="ph">[Year]</time><div class="body"><h3 class="ph">[Award name]</h3><p class="ph">[Room for your next prize, certificate or competition result. Say who gave it and what it was for.]</p><span class="tag ph">[Placing]</span></div></li>
         </ol>
         <dl class="catalog">
           <dt>Object</dt><dd>Molten lava world (imagined)</dd>
@@ -613,6 +631,56 @@
         </ol>
         <dl class="catalog">
           <dt>Object</dt><dd>Ice world with thin atmosphere (imagined)</dd>
+        </dl>
+      </div>
+    </section>
+
+    <section data-stop="education">
+      <div class="panel">
+        <p class="eyebrow">School · GCSEs</p>
+        <h2>Education</h2>
+        <p>The GCSEs I'm taking at a secondary school in London. The ones marked with a dot lead most directly towards astrophysics and game development.</p>
+        <ul class="subjects">
+          <li class="core"><b>Astronomy</b><span>Edexcel</span></li>
+          <li class="core"><b>Mathematics</b><span>Higher tier</span></li>
+          <li class="core"><b>Triple Science</b><span>Biology, Chemistry, Physics · Higher tier</span></li>
+          <li class="core"><b>Computer Science</b><span>GCSE</span></li>
+          <li><b>English</b><span>GCSE</span></li>
+          <li><b>French</b><span>GCSE</span></li>
+          <li><b>Geography</b><span>GCSE</span></li>
+          <li><b>Religious Education</b><span>GCSE</span></li>
+        </ul>
+        <p class="ph">[Target or predicted grades can go here once you have them.]</p>
+        <h3 class="sub-h">Languages</h3>
+        <ul class="subjects">
+          <li><b>English</b><span>Native</span></li>
+          <li><b>French</b><span>Learning at school for GCSE</span></li>
+          <li><b>German</b><span>Basic · I'm a little bit German, so I'm learning it on Duolingo</span></li>
+        </ul>
+        <dl class="catalog">
+          <dt>Object</dt><dd>Parchment-banded scholar world (imagined)</dd>
+        </dl>
+      </div>
+    </section>
+
+    <section data-stop="experience">
+      <div class="panel">
+        <p class="eyebrow">Experience · Skills</p>
+        <h2>Work experience &amp; skills</h2>
+        <ol class="log">
+          <li><time class="ph">[Year]</time><div class="body"><h3>Barristers' chambers, London</h3><p>Work experience with a junior barrister at a set of chambers in London.</p><p class="ph">[Add a line on what you did or learned, e.g. sitting in on a hearing or helping with case research.]</p><span class="tag">Law</span></div></li>
+          <li><time class="ph">[Year]</time><div class="body"><h3 class="ph">[Next placement]</h3><p class="ph">[Planned work experience, ideally in science, engineering or tech.]</p><span class="tag upcoming">Planned</span></div></li>
+        </ol>
+        <h3 class="sub-h">Coding</h3>
+        <div class="skill-row"><span class="skill-label">Using now</span><ul class="chips"><li>JavaScript</li><li>HTML &amp; CSS</li><li>Three.js / WebGL</li></ul></div>
+        <div class="skill-row"><span class="skill-label">Learning next</span><ul class="chips"><li class="next">C#</li><li class="next">Lua</li></ul></div>
+        <p class="note">C# is the language behind the Unity game engine, and Lua is used for Roblox games and lots of game mods.</p>
+        <h3 class="sub-h">Other skills</h3>
+        <ul class="chips">
+          <li>Research &amp; science writing</li><li>Simulation design</li><li>Game design</li><li>Running a YouTube channel</li><li>Independent learning</li>
+        </ul>
+        <dl class="catalog">
+          <dt>Object</dt><dd>Circuit-lit world (imagined)</dd>
         </dl>
       </div>
     </section>
@@ -1398,6 +1466,11 @@
   addWorld(W1, 10, 0, 0xc98a54, 0xf1d3a4, 0x7a4528, 0xffc98a, true);
   addWorld(W2, 6.5, 1, 0x1b120e, 0x3a2418, 0xff5a12, 0xff6a20, false);
   addWorld(W3, 7.5, 2, 0x5f86b8, 0xd8ecff, 0xffffff, 0x8fd8ff, false);
+  // education: parchment bands; experience and skills: dark with glowing circuit cracks
+  const W12 = new THREE.Vector3(-20, 30, -380);
+  addWorld(W12, 7, 0, 0x6b4f2a, 0xe8d2a0, 0x9a3b2a, 0xffe0a8, false);
+  const W13 = new THREE.Vector3(30, -28, -395);
+  addWorld(W13, 6.5, 1, 0x0a1420, 0x13263a, 0x5affc8, 0x5affc8, false);
   const W6 = new THREE.Vector3(85, 28, -170);
   addWorld(W6, 8, 0, 0x2c3a12, 0xc8e04a, 0xf4c21a, 0xb6f03c, false);
   const W7 = new THREE.Vector3(-10, -34, -205);
@@ -1430,6 +1503,8 @@
     { obj: W10, r: 10, side: 1.0, up: 0.2, dist: 3.0 },                                  // Trust Tribes
     { obj: W2, r: 8.5, side: 1.0, up: 0.15, dist: 3.2 },
     { obj: W3, r: 10, side: 1.0, up: 0.3, dist: 3.0 },
+    { obj: W12, r: 9.5, side: 1.0, up: 0.2, dist: 3.0 },                                // education
+    { obj: W13, r: 9, side: 1.0, up: 0.25, dist: 3.0 },                                 // work experience and skills
     { obj: W5, r: 9.5, side: 1.0, up: 0.2, dist: 3.1 },                                 // lectures
     { obj: W4, r: 12, side: 1.0, up: 0.2, dist: 3.0 },                                  // YouTube channel    { obj: new THREE.Vector3(0, 0, -230), r: 200, side: 0.4, up: 0.35, dist: 1.6 },     // contact: pull back over the whole route
   ];
