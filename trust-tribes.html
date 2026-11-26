@@ -1,0 +1,634 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<title>Trust Tribes</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  /* Layout: a lab bench. The dish is the hero on the left, instruments stack on the right; the rules and experiments sit underneath like a worksheet. Single dark look on purpose, so the six tribe colours carry all the colour. */
+  :root {
+    --ink: #071017;
+    --bench: #0d1a22;
+    --bench-2: #12232d;
+    --line: rgba(170, 205, 215, 0.14);
+    --text: #e7f0f1;
+    --muted: #8ea4aa;
+    --hot: #ff5d5d;
+    --font-display: "Bricolage Grotesque", "Arial Black", system-ui, sans-serif;
+    --font-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --font-mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+    color-scheme: dark;
+  }
+  html, body { background: var(--ink); color: var(--text); }
+  body { font: 16px/1.6 var(--font-body); -webkit-font-smoothing: antialiased; }
+  .page {
+    max-width: 1220px; margin: 0 auto;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    padding-block: 40px 56px;
+    display: grid; gap: 40px;
+  }
+  h1, h2, h3 { margin: 0; text-wrap: balance; }
+  h1 { font: 800 clamp(40px, 7vw, 76px)/0.95 var(--font-display); letter-spacing: -0.02em; }
+  h2 { font: 600 13px var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+  h3 { font: 600 22px/1.2 var(--font-display); }
+  p { margin: 0; }
+  .kicker { font: 500 12px var(--font-mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+  .top { display: grid; gap: 14px; max-width: 760px; }
+  .lede { font-size: 18px; color: var(--text); max-width: 62ch; }
+  .lede em { font-style: normal; font-weight: 600; }
+  .lede .c { color: #e7f0f1; border-bottom: 2px solid #e7f0f1; }
+  .lede .x { color: var(--hot); border-bottom: 2px solid var(--hot); }
+
+  .lab { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: 24px; align-items: start; }
+  .stage { display: grid; gap: 14px; min-width: 0; }
+  .dish-wrap { position: relative; width: min(100%, 80vh); aspect-ratio: 1; max-width: 100%; justify-self: center; }
+  #dish { width: 100%; height: 100%; display: block; }
+  .hud { position: absolute; left: 0; top: 0; display: flex; flex-direction: column; gap: 2px; font: 500 13px var(--font-mono); color: var(--muted); font-variant-numeric: tabular-nums; }
+  .hud b { color: var(--text); font-weight: 500; }
+  .banner {
+    position: absolute; left: 50%; bottom: 8%; transform: translateX(-50%);
+    background: var(--bench-2); border: 1px solid var(--line); border-radius: 999px;
+    padding: 8px 16px; font: 500 14px var(--font-body); white-space: nowrap; max-width: 92%; overflow: hidden; text-overflow: ellipsis;
+  }
+  .transport { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .btn {
+    font: 500 14px var(--font-body); color: var(--text); background: var(--bench);
+    border: 1px solid var(--line); border-radius: 6px; padding: 8px 14px; cursor: pointer;
+  }
+  .btn:hover { border-color: rgba(231, 240, 241, 0.5); }
+  .btn.primary { background: var(--text); color: var(--ink); border-color: var(--text); font-weight: 600; min-width: 84px; }
+  .speed { display: flex; align-items: center; gap: 8px; font: 500 13px var(--font-mono); color: var(--muted); margin-left: auto; }
+  .speed output { color: var(--text); min-width: 3ch; font-variant-numeric: tabular-nums; }
+  input[type="range"] { accent-color: var(--text); width: 110px; }
+  :focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
+
+  .side { display: grid; gap: 16px; min-width: 0; }
+  .card { background: var(--bench); border: 1px solid var(--line); border-radius: 10px; padding: 18px; display: grid; gap: 14px; min-width: 0; }
+  .roster { width: 100%; border-collapse: collapse; font-size: 14px; font-variant-numeric: tabular-nums; }
+  .roster th { font: 500 11px var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); text-align: left; padding: 0 0 6px; }
+  .roster th.num, .roster td.num { text-align: right; }
+  .roster td { padding: 5px 0; border-top: 1px solid var(--line); vertical-align: middle; }
+  .who { display: flex; align-items: center; gap: 8px; }
+  .who svg { flex: none; }
+  .bar { height: 6px; border-radius: 3px; background: currentColor; opacity: 0.85; min-width: 1px; }
+  .barcell { width: 38%; padding-inline: 10px !important; }
+  #chart { width: 100%; height: 150px; display: block; }
+  .log { font: 400 12px/1.5 var(--font-mono); color: var(--muted); min-height: 3em; }
+  .ctl { display: grid; gap: 4px; }
+  .ctl-head { display: flex; justify-content: space-between; gap: 12px; font-size: 14px; }
+  .ctl-head output { font: 500 13px var(--font-mono); color: var(--text); font-variant-numeric: tabular-nums; }
+  .ctl input[type="range"] { width: 100%; }
+  .ctl small { color: var(--muted); font-size: 12px; }
+  .tribes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 16px; }
+  .tribes .ctl-head span { display: flex; align-items: center; gap: 6px; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between; }
+  .row small { color: var(--muted); font: 500 12px var(--font-mono); }
+
+  .sheet { display: grid; gap: 28px; }
+  .sheet-intro { display: grid; gap: 8px; max-width: 70ch; }
+  .sheet-intro p { color: var(--muted); }
+  .deal { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 24px; align-items: center; }
+  .matrix-wrap { overflow-x: auto; }
+  .matrix { border-collapse: separate; border-spacing: 6px; font-variant-numeric: tabular-nums; }
+  .matrix th { font: 500 12px var(--font-mono); color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; padding: 4px 8px; text-align: center; }
+  .matrix th.side-h { text-align: right; }
+  .matrix td { background: var(--bench-2); border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px; text-align: center; min-width: 120px; }
+  .matrix td b { display: block; font: 600 18px var(--font-display); }
+  .matrix td span { font-size: 12px; color: var(--muted); }
+  .pos { color: var(--text); } .neg { color: var(--hot); }
+  .strats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+  .strat { background: var(--bench); border: 1px solid var(--line); border-radius: 10px; padding: 16px; display: grid; gap: 6px; align-content: start; }
+  .strat .who { font: 600 17px var(--font-display); }
+  .strat p { color: var(--muted); font-size: 14px; }
+  .exps { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .exp { background: var(--bench); border: 1px solid var(--line); border-radius: 10px; padding: 16px; display: grid; gap: 8px; align-content: start; }
+  .exp p { color: var(--muted); font-size: 14px; }
+  .exp .watch { color: var(--text); }
+  .exp .btn { justify-self: start; }
+  footer { color: var(--muted); font-size: 14px; border-top: 1px solid var(--line); padding-top: 18px; display: grid; gap: 6px; }
+  footer a { color: var(--text); }
+
+  @media (max-width: 900px) {
+    .lab, .deal { grid-template-columns: minmax(0, 1fr); }
+    .strats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 560px) {
+    .strats, .exps, .tribes { grid-template-columns: minmax(0, 1fr); }
+    .speed { margin-left: 0; }
+    .matrix td { min-width: 96px; padding: 8px; }
+  }
+</style>
+
+<div class="page">
+  <header class="top">
+    <p class="kicker">An evolution experiment · by Beau Parkins</p>
+    <h1>Trust Tribes</h1>
+    <p class="lede">Sixty creatures share a dish. Whenever two of them bump into each other, each one secretly chooses to <em class="c">cooperate</em> or <em class="x">cheat</em>. The creatures that earn the most points have children, and the ones that earn the least die out. Which personality takes over?</p>
+  </header>
+
+  <main class="lab">
+    <section class="stage" aria-label="Simulation">
+      <div class="dish-wrap" id="dishWrap">
+        <canvas id="dish" role="img" aria-label="A round dish of coloured creatures meeting and trading points"></canvas>
+        <div class="hud"><span>Generation <b id="gen">1</b></span><span><b id="pop">60</b> alive</span></div>
+        <div class="banner" id="banner" hidden></div>
+      </div>
+      <div class="transport">
+        <button class="btn primary" id="playBtn" type="button">Pause</button>
+        <button class="btn" id="stepBtn" type="button">Skip a generation</button>
+        <button class="btn" id="resetBtn" type="button">Restart</button>
+        <label class="speed">Speed <input id="speed" type="range" min="0" max="5" step="1" value="1"><output id="speedOut">1×</output></label>
+      </div>
+    </section>
+
+    <aside class="side">
+      <section class="card" aria-labelledby="rosterH">
+        <h2 id="rosterH">The colony now</h2>
+        <table class="roster">
+          <thead><tr><th>Tribe</th><th class="num">Alive</th><th></th><th class="num">Pts / meeting</th></tr></thead>
+          <tbody id="roster"></tbody>
+        </table>
+      </section>
+      <section class="card" aria-labelledby="chartH">
+        <h2 id="chartH">Share of the colony, generation by generation</h2>
+        <canvas id="chart" role="img" aria-label="Stacked chart of each tribe's share of the colony over generations"></canvas>
+        <p class="log" id="log" aria-live="polite">Generation 1 is meeting each other now. After everyone has had about six meetings, the bottom five earners die and the top five each have a child.</p>
+      </section>
+      <section class="card" aria-labelledby="rulesH">
+        <h2 id="rulesH">Rules of the dish</h2>
+        <div class="ctl">
+          <div class="ctl-head"><label for="rounds">Rounds per meeting</label><output id="roundsOut">8</output></div>
+          <input id="rounds" type="range" min="1" max="20" step="1" value="8">
+          <small>How many times two creatures play each other before moving on.</small>
+        </div>
+        <div class="ctl">
+          <div class="ctl-head"><label for="noise">Mistakes</label><output id="noiseOut">0%</output></div>
+          <input id="noise" type="range" min="0" max="25" step="1" value="0">
+          <small>Chance that a creature does the opposite of what it meant to.</small>
+        </div>
+        <div class="ctl">
+          <div class="ctl-head"><label for="reward">Reward when both cooperate</label><output id="rewardOut">+2</output></div>
+          <input id="reward" type="range" min="0.5" max="2.9" step="0.1" value="2">
+          <small>Cheating someone who trusts you always pays +3.</small>
+        </div>
+        <div class="ctl">
+          <div class="ctl-head"><label for="turnover">Deaths and births per generation</label><output id="turnoverOut">5</output></div>
+          <input id="turnover" type="range" min="1" max="15" step="1" value="5">
+        </div>
+      </section>
+      <section class="card" aria-labelledby="startH">
+        <h2 id="startH">Starting tribes</h2>
+        <div class="tribes" id="tribes"></div>
+        <div class="row"><small id="startTotal">60 creatures</small><button class="btn" id="applyStart" type="button">Restart with these tribes</button></div>
+      </section>
+    </aside>
+  </main>
+
+  <section class="sheet" aria-labelledby="dealH">
+    <div class="sheet-intro">
+      <h3 id="dealH">The deal every meeting</h3>
+      <p>Each round, both creatures choose at the same time. Working together is good for both, but cheating someone who trusts you is the best single move. That tension is called the <b>prisoner's dilemma</b>, and it shows up everywhere from animal behaviour to countries signing treaties.</p>
+    </div>
+    <div class="deal">
+      <div class="matrix-wrap">
+        <table class="matrix" aria-label="Points each creature gets in one round">
+          <thead><tr><th></th><th>They cooperate</th><th>They cheat</th></tr></thead>
+          <tbody>
+            <tr><th class="side-h" scope="row">You cooperate</th><td><b class="pos" id="mRR">+2 / +2</b><span>both win</span></td><td><b><span class="neg" style="font:inherit;color:var(--hot)">−1</span> / +3</b><span>you get used</span></td></tr>
+            <tr><th class="side-h" scope="row">You cheat</th><td><b>+3 / <span style="font:inherit;color:var(--hot)">−1</span></b><span>you use them</span></td><td><b class="pos">0 / 0</b><span>nobody gains</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="color:var(--muted)">If you only meet someone once, cheating always earns more, whatever they do. But creatures who meet again and again can build trust, and that changes everything. Run the dish and see which strategy wins out over many generations.</p>
+    </div>
+
+    <div class="sheet-intro"><h3>The six tribes</h3></div>
+    <div class="strats" id="strats"></div>
+
+    <div class="sheet-intro">
+      <h3>Experiments to try</h3>
+      <p>Each one restarts the dish with different rules. Make a guess before you press run.</p>
+    </div>
+    <div class="exps" id="exps"></div>
+  </section>
+
+  <footer>
+    <p>Inspired by Robert Axelrod's 1980 computer tournaments, where game theorists sent in strategies for the prisoner's dilemma and a four-line program called Tit for Tat (Mirror here) beat them all.</p>
+    <p>Made by Beau Parkins · part of my <a href="https://beauarthurparkins.github.io/portfolio/" target="_blank" rel="noopener">space portfolio</a>.</p>
+  </footer>
+</div>
+
+<script>
+(() => {
+  const TEMPT = 3, SUCKER = -1, BOTH_CHEAT = 0;
+  const MEETS_PER_AGENT = 6, RADIUS = 0.017, RIM = 0.475, SPEED = 0.085, MEET_TIME = 0.75;
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const STRATS = [
+    { id: 'mirror', name: 'Mirror', color: '#5a9bff', shape: 'square',
+      rule: 'Cooperates on the first round, then copies whatever you did last round.',
+      move: (me, them) => them.length ? them[them.length - 1] : true },
+    { id: 'forgiver', name: 'Forgiver', color: '#3fd6c0', shape: 'hex',
+      rule: 'Like Mirror, but only hits back after you cheat twice in a row.',
+      move: (me, them) => !(them.length >= 2 && !them[them.length - 1] && !them[them.length - 2]) },
+    { id: 'grudge', name: 'Grudge', color: '#b38cff', shape: 'diamond',
+      rule: 'Cooperates until you cheat even once. After that it never trusts you again.',
+      move: (me, them) => !them.includes(false) },
+    { id: 'saint', name: 'Saint', color: '#f4cf62', shape: 'circle',
+      rule: 'Always cooperates, whatever you do to it.',
+      move: () => true },
+    { id: 'cheat', name: 'Cheat', color: '#ff5d5d', shape: 'triangle',
+      rule: 'Always cheats. Never cooperates.',
+      move: () => false },
+    { id: 'coin', name: 'Coin', color: '#a3adb4', shape: 'ring',
+      rule: 'Flips a coin every round. Completely unpredictable.',
+      move: () => Math.random() < 0.5 },
+  ];
+  const BY_ID = Object.fromEntries(STRATS.map(s => [s.id, s]));
+
+  const DEFAULT_START = { mirror: 10, forgiver: 10, grudge: 10, saint: 10, cheat: 10, coin: 10 };
+  const settings = { rounds: 8, noise: 0, reward: 2, turnover: 5, start: { ...DEFAULT_START } };
+
+  let agents = [], links = [], floats = [], ghosts = [], history = [], nextId = 1;
+  let gen = 1, meetingsThisGen = 0, simTime = 0, running = true, speedIdx = 1, takeoverShown = false;
+  let lastAvg = {};
+  const SPEEDS = [0.5, 1, 2, 4, 8, 16];
+
+  const $ = id => document.getElementById(id);
+  const rand = (a, b) => a + Math.random() * (b - a);
+
+  /* ---------- shapes (each tribe has a colour and a shape, so it reads without colour too) ---------- */
+  function tracePath(ctx, shape, x, y, r) {
+    ctx.beginPath();
+    if (shape === 'square') { const s = r * 0.86; ctx.rect(x - s, y - s, s * 2, s * 2); }
+    else if (shape === 'triangle') { ctx.moveTo(x, y - r * 1.1); ctx.lineTo(x + r, y + r * 0.75); ctx.lineTo(x - r, y + r * 0.75); ctx.closePath(); }
+    else if (shape === 'diamond') { ctx.moveTo(x, y - r * 1.15); ctx.lineTo(x + r, y); ctx.lineTo(x, y + r * 1.15); ctx.lineTo(x - r, y); ctx.closePath(); }
+    else if (shape === 'hex') { for (let i = 0; i < 6; i++) { const a = Math.PI / 6 + i * Math.PI / 3; ctx[i ? 'lineTo' : 'moveTo'](x + Math.cos(a) * r, y + Math.sin(a) * r); } ctx.closePath(); }
+    else { ctx.arc(x, y, r, 0, Math.PI * 2); }
+  }
+  function drawShape(ctx, s, x, y, r, alpha) {
+    ctx.globalAlpha = alpha;
+    tracePath(ctx, s.shape, x, y, r);
+    if (s.shape === 'ring') { ctx.lineWidth = r * 0.45; ctx.strokeStyle = s.color; ctx.stroke(); }
+    else { ctx.fillStyle = s.color; ctx.fill(); }
+    ctx.globalAlpha = 1;
+  }
+  function shapeSVG(s, size) {
+    const c = s.color, h = size / 2, r = size * 0.36;
+    const shapes = {
+      square: `<rect x="${h - r * 0.86}" y="${h - r * 0.86}" width="${r * 1.72}" height="${r * 1.72}" fill="${c}"/>`,
+      triangle: `<path d="M${h} ${h - r * 1.1}L${h + r} ${h + r * 0.75}L${h - r} ${h + r * 0.75}Z" fill="${c}"/>`,
+      diamond: `<path d="M${h} ${h - r * 1.15}L${h + r} ${h}L${h} ${h + r * 1.15}L${h - r} ${h}Z" fill="${c}"/>`,
+      hex: `<path d="${[0, 1, 2, 3, 4, 5].map(i => { const a = Math.PI / 6 + i * Math.PI / 3; return (i ? 'L' : 'M') + (h + Math.cos(a) * r).toFixed(2) + ' ' + (h + Math.sin(a) * r).toFixed(2); }).join('')}Z" fill="${c}"/>`,
+      circle: `<circle cx="${h}" cy="${h}" r="${r}" fill="${c}"/>`,
+      ring: `<circle cx="${h}" cy="${h}" r="${r * 0.8}" fill="none" stroke="${c}" stroke-width="${r * 0.45}"/>`,
+    };
+    return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" aria-hidden="true">${shapes[s.shape]}</svg>`;
+  }
+
+  /* ---------- the colony ---------- */
+  function placeInDish(x, y) {
+    const dx = x - 0.5, dy = y - 0.5, d = Math.hypot(dx, dy), max = RIM - RADIUS * 1.5;
+    if (d > max) { x = 0.5 + dx / d * max; y = 0.5 + dy / d * max; }
+    return [x, y];
+  }
+  function makeAgent(sid, x, y, born) {
+    const a = rand(0, Math.PI * 2);
+    if (x === undefined) { const r = Math.sqrt(Math.random()) * (RIM - RADIUS * 2), t = rand(0, Math.PI * 2); x = 0.5 + Math.cos(t) * r; y = 0.5 + Math.sin(t) * r; }
+    [x, y] = placeInDish(x, y);
+    return { id: nextId++, s: sid, x, y, heading: a, busy: 0, cool: rand(0, 0.6), last: null, score: 0, meetings: 0, born: born ? simTime : -10 };
+  }
+  function reset() {
+    agents = []; links = []; floats = []; ghosts = []; history = []; lastAvg = {};
+    gen = 1; meetingsThisGen = 0; takeoverShown = false;
+    for (const s of STRATS) for (let i = 0; i < settings.start[s.id]; i++) agents.push(makeAgent(s.id));
+    record();
+    $('log').textContent = agents.length < 2
+      ? 'Add at least two creatures to start.'
+      : `Generation 1 is meeting each other now. After everyone has had about ${MEETS_PER_AGENT} meetings, the bottom ${Math.min(settings.turnover, Math.floor(agents.length / 2))} earners die and the top ones each have a child.`;
+    $('banner').hidden = true;
+    updateRoster(); drawChart();
+  }
+  function counts() { const c = Object.fromEntries(STRATS.map(s => [s.id, 0])); agents.forEach(a => c[a.s]++); return c; }
+  function record() { history.push(counts()); }
+
+  /* ---------- one meeting: several rounds of cooperate-or-cheat ---------- */
+  function playMeeting(a, b) {
+    const ha = [], hb = [], sa = BY_ID[a.s], sb = BY_ID[b.s];
+    let pa = 0, pb = 0, mutual = 0;
+    for (let r = 0; r < settings.rounds; r++) {
+      let ma = sa.move(ha, hb), mb = sb.move(hb, ha);
+      if (Math.random() < settings.noise) ma = !ma;
+      if (Math.random() < settings.noise) mb = !mb;
+      if (ma && mb) { pa += settings.reward; pb += settings.reward; mutual++; }
+      else if (ma && !mb) { pa += SUCKER; pb += TEMPT; }
+      else if (!ma && mb) { pa += TEMPT; pb += SUCKER; }
+      else { pa += BOTH_CHEAT; pb += BOTH_CHEAT; }
+      ha.push(ma); hb.push(mb);
+    }
+    return { pa, pb, trust: mutual / settings.rounds };
+  }
+
+  function meet(a, b) {
+    const res = playMeeting(a, b);
+    a.score += res.pa; b.score += res.pb; a.meetings++; b.meetings++;
+    a.busy = b.busy = MEET_TIME; a.last = b.id; b.last = a.id;
+    links.push({ a, b, t: simTime, trust: res.trust });
+    if (!reduce && SPEEDS[speedIdx] <= 2) {
+      floats.push({ x: a.x, y: a.y - RADIUS * 1.6, v: res.pa, t: simTime });
+      floats.push({ x: b.x, y: b.y - RADIUS * 1.6, v: res.pb, t: simTime });
+    }
+    meetingsThisGen++;
+    if (meetingsThisGen >= agents.length * MEETS_PER_AGENT / 2) nextGeneration();
+  }
+
+  /* ---------- natural selection ---------- */
+  function nextGeneration() {
+    const fit = a => a.meetings ? a.score / a.meetings : null;
+    const known = agents.map(fit).filter(v => v !== null);
+    const mean = known.length ? known.reduce((x, y) => x + y, 0) / known.length : 0;
+    // average points per meeting by tribe, for the table
+    lastAvg = {};
+    for (const s of STRATS) {
+      const mine = agents.filter(a => a.s === s.id && a.meetings);
+      lastAvg[s.id] = mine.length ? mine.reduce((t, a) => t + a.score / a.meetings, 0) / mine.length : null;
+    }
+    const order = agents.slice().sort(() => Math.random() - 0.5)
+      .map(a => ({ a, f: fit(a) ?? mean })).sort((p, q) => p.f - q.f).map(p => p.a);
+    const k = Math.min(settings.turnover, Math.floor(agents.length / 2));
+    const dead = order.slice(0, k), parents = order.slice(order.length - k);
+    const deadSet = new Set(dead);
+    dead.forEach(a => ghosts.push({ x: a.x, y: a.y, s: a.s, t: simTime }));
+    agents = agents.filter(a => !deadSet.has(a));
+    links = links.filter(l => !deadSet.has(l.a) && !deadSet.has(l.b));
+    parents.forEach(p => agents.push(makeAgent(p.s, p.x + rand(-0.04, 0.04), p.y + rand(-0.04, 0.04), true)));
+    agents.forEach(a => { a.score = 0; a.meetings = 0; });
+    meetingsThisGen = 0;
+    gen++;
+    record();
+
+    const tally = list => {
+      const c = {}; list.forEach(a => c[a.s] = (c[a.s] || 0) + 1);
+      return Object.entries(c).sort((x, y) => y[1] - x[1]).map(([id, n]) => `${n} ${BY_ID[id].name}`).join(', ');
+    };
+    $('log').textContent = k ? `Generation ${gen - 1} → ${gen}: died ${tally(dead)} · born ${tally(parents)}.` : '';
+    const c = counts(), alive = STRATS.filter(s => c[s.id] > 0);
+    if (alive.length === 1 && !takeoverShown) {
+      takeoverShown = true;
+      showBanner(`Generation ${gen}: ${alive[0].name} took over the whole dish`);
+    }
+    updateRoster(); drawChart();
+  }
+
+  let bannerTimer;
+  function showBanner(text) {
+    const b = $('banner'); b.textContent = text; b.hidden = false;
+    clearTimeout(bannerTimer); bannerTimer = setTimeout(() => { b.hidden = true; }, 5000);
+  }
+
+  /* ---------- movement ---------- */
+  function step(dt) {
+    simTime += dt;
+    for (const a of agents) {
+      if (a.busy > 0) {
+        a.busy -= dt;
+        if (a.busy <= 0) a.cool = 0.35;
+        continue;
+      }
+      a.cool -= dt;
+      a.heading += rand(-1, 1) * 2.4 * dt;
+      a.x += Math.cos(a.heading) * SPEED * dt;
+      a.y += Math.sin(a.heading) * SPEED * dt;
+      const dx = a.x - 0.5, dy = a.y - 0.5, d = Math.hypot(dx, dy), max = RIM - RADIUS;
+      if (d > max) {
+        const nx = dx / d, ny = dy / d;
+        let vx = Math.cos(a.heading), vy = Math.sin(a.heading);
+        const dot = vx * nx + vy * ny;
+        if (dot > 0) { vx -= 2 * dot * nx; vy -= 2 * dot * ny; a.heading = Math.atan2(vy, vx); }
+        a.x = 0.5 + nx * max; a.y = 0.5 + ny * max;
+      }
+    }
+    const free = agents.filter(a => a.busy <= 0 && a.cool <= 0);
+    const touch = (RADIUS * 2.2) ** 2;
+    for (let i = 0; i < free.length; i++) {
+      const a = free[i]; if (a.busy > 0) continue;
+      for (let j = i + 1; j < free.length; j++) {
+        const b = free[j]; if (b.busy > 0 || a.last === b.id) continue;
+        if ((a.x - b.x) ** 2 + (a.y - b.y) ** 2 < touch) {
+          meet(a, b);
+          // after the meeting they head off in opposite directions
+          const ang = Math.atan2(b.y - a.y, b.x - a.x);
+          a.heading = ang + Math.PI + rand(-0.6, 0.6); b.heading = ang + rand(-0.6, 0.6);
+          break;
+        }
+      }
+    }
+    links = links.filter(l => simTime - l.t < MEET_TIME + 0.3);
+    floats = floats.filter(f => simTime - f.t < 1.1);
+    ghosts = ghosts.filter(g => simTime - g.t < 1.2);
+  }
+
+  /* ---------- drawing ---------- */
+  const dish = $('dish'), dctx = dish.getContext('2d');
+  const chart = $('chart'), cctx = chart.getContext('2d');
+  let S = 600, dpr = 1;
+  function sizeCanvases() {
+    dpr = Math.min(devicePixelRatio || 1, 2);
+    S = dish.clientWidth;
+    dish.width = S * dpr; dish.height = S * dpr;
+    chart.width = chart.clientWidth * dpr; chart.height = chart.clientHeight * dpr;
+    drawChart();
+  }
+  new ResizeObserver(sizeCanvases).observe($('dishWrap'));
+
+  function render() {
+    const c = dctx;
+    c.setTransform(dpr * S, 0, 0, dpr * S, 0, 0);
+    c.clearRect(0, 0, 1, 1);
+    // the dish
+    const g = c.createRadialGradient(0.46, 0.42, 0.05, 0.5, 0.5, RIM);
+    g.addColorStop(0, '#13262f'); g.addColorStop(1, '#0a161d');
+    c.beginPath(); c.arc(0.5, 0.5, RIM, 0, Math.PI * 2); c.fillStyle = g; c.fill();
+    c.save(); c.clip();
+    c.strokeStyle = 'rgba(170,205,215,0.05)'; c.lineWidth = 1 / S;
+    for (let v = 0.1; v < 1; v += 0.1) { c.beginPath(); c.moveTo(v, 0); c.lineTo(v, 1); c.moveTo(0, v); c.lineTo(1, v); c.stroke(); }
+    c.restore();
+    c.beginPath(); c.arc(0.5, 0.5, RIM, 0, Math.PI * 2); c.strokeStyle = 'rgba(170,205,215,0.35)'; c.lineWidth = 2 / S; c.stroke();
+    c.beginPath(); c.arc(0.5, 0.5, RIM + 0.012, 0, Math.PI * 2); c.strokeStyle = 'rgba(170,205,215,0.12)'; c.lineWidth = 1 / S; c.stroke();
+
+    // meetings: white when they trusted each other, red when someone got cheated
+    for (const l of links) {
+      const age = (simTime - l.t) / (MEET_TIME + 0.3), alpha = Math.max(0, 1 - age);
+      const r = Math.round(255 - (255 - 231) * l.trust), gg = Math.round(93 + (240 - 93) * l.trust), b = Math.round(93 + (241 - 93) * l.trust);
+      c.strokeStyle = `rgba(${r},${gg},${b},${0.85 * alpha})`;
+      c.lineWidth = (1.5 + 2 * l.trust) / S;
+      c.beginPath(); c.moveTo(l.a.x, l.a.y); c.lineTo(l.b.x, l.b.y); c.stroke();
+    }
+    // deaths fade out as a widening ring
+    for (const gh of ghosts) {
+      const age = (simTime - gh.t) / 1.2;
+      c.globalAlpha = 1 - age; c.strokeStyle = BY_ID[gh.s].color; c.lineWidth = 1.5 / S;
+      c.beginPath(); c.arc(gh.x, gh.y, RADIUS * (1 + age * 2.5), 0, Math.PI * 2); c.stroke(); c.globalAlpha = 1;
+    }
+    for (const a of agents) {
+      const s = BY_ID[a.s], age = simTime - a.born;
+      const pop = age < 0.6 ? 0.4 + 0.6 * Math.sin(Math.min(1, age / 0.6) * Math.PI / 2) * (1 + 0.25 * Math.sin(age * 10)) : 1;
+      if (age < 0.9) { c.globalAlpha = 1 - age / 0.9; c.strokeStyle = s.color; c.lineWidth = 1.5 / S; c.beginPath(); c.arc(a.x, a.y, RADIUS * (1.4 + age * 2), 0, Math.PI * 2); c.stroke(); c.globalAlpha = 1; }
+      drawShape(c, s, a.x, a.y, RADIUS * pop, 1);
+    }
+    // points floating up from each meeting
+    c.font = `500 ${11 / S}px "IBM Plex Mono", monospace`; c.textAlign = 'center';
+    for (const f of floats) {
+      const age = (simTime - f.t) / 1.1;
+      c.globalAlpha = 1 - age; c.fillStyle = f.v < 0 ? '#ff5d5d' : '#e7f0f1';
+      c.fillText((f.v > 0 ? '+' : '') + Math.round(f.v), f.x, f.y - age * 0.03);
+    }
+    c.globalAlpha = 1;
+    $('gen').textContent = gen; $('pop').textContent = agents.length;
+  }
+
+  function drawChart() {
+    const c = cctx, W = chart.width / dpr, H = chart.height / dpr;
+    if (!W) return;
+    c.setTransform(dpr, 0, 0, dpr, 0, 0); c.clearRect(0, 0, W, H);
+    const L = 34, R = 6, T = 6, B = 18, w = W - L - R, h = H - T - B;
+    c.font = '500 10px "IBM Plex Mono", monospace'; c.fillStyle = '#8ea4aa'; c.textAlign = 'right'; c.textBaseline = 'middle';
+    [0, 0.5, 1].forEach(v => { const y = T + h * (1 - v); c.fillText(Math.round(v * 100) + '%', L - 6, y); c.strokeStyle = 'rgba(170,205,215,0.12)'; c.beginPath(); c.moveTo(L, y); c.lineTo(L + w, y); c.stroke(); });
+    const n = history.length;
+    if (n === 0) return;
+    const xs = i => L + (n === 1 ? 0 : (i / (n - 1)) * w);
+    const total = history.map(hh => Object.values(hh).reduce((a, b) => a + b, 0) || 1);
+    let base = new Array(n).fill(0);
+    for (const s of STRATS) {
+      const top = history.map((hh, i) => base[i] + hh[s.id] / total[i]);
+      c.beginPath();
+      if (n === 1) { c.rect(L, T + h * (1 - top[0]), w, h * (top[0] - base[0])); }
+      else {
+        top.forEach((v, i) => c[i ? 'lineTo' : 'moveTo'](xs(i), T + h * (1 - v)));
+        for (let i = n - 1; i >= 0; i--) c.lineTo(xs(i), T + h * (1 - base[i]));
+        c.closePath();
+      }
+      c.fillStyle = s.color; c.globalAlpha = 0.85; c.fill(); c.globalAlpha = 1;
+      base = top;
+    }
+    c.textAlign = 'left'; c.textBaseline = 'alphabetic'; c.fillStyle = '#8ea4aa';
+    c.fillText('gen 1', L, H - 4);
+    c.textAlign = 'right'; c.fillText('gen ' + n, L + w, H - 4);
+  }
+
+  function updateRoster() {
+    const c = counts(), n = agents.length || 1;
+    $('roster').innerHTML = STRATS.map(s => {
+      const avg = lastAvg[s.id];
+      return `<tr><td><span class="who">${shapeSVG(s, 16)}${s.name}</span></td><td class="num">${c[s.id]}</td>` +
+        `<td class="barcell"><div class="bar" style="width:${(c[s.id] / n * 100).toFixed(1)}%;color:${s.color}"></div></td>` +
+        `<td class="num">${avg == null ? '–' : (avg >= 0 ? '+' : '−') + Math.abs(avg).toFixed(1)}</td></tr>`;
+    }).join('');
+  }
+
+  /* ---------- loop ---------- */
+  let lastT = performance.now();
+  function frame(now) {
+    const real = Math.min(0.05, (now - lastT) / 1000); lastT = now;
+    if (running && agents.length >= 2) {
+      let dt = real * SPEEDS[speedIdx];
+      const steps = Math.ceil(dt / 0.02);
+      for (let i = 0; i < steps; i++) step(dt / steps);
+    }
+    render();
+    requestAnimationFrame(frame);
+  }
+
+  /* ---------- controls ---------- */
+  function bindRange(id, fmt, apply) {
+    const el = $(id), out = $(id + 'Out');
+    const upd = () => { const v = Number(el.value); out.textContent = fmt(v); apply(v); };
+    el.addEventListener('input', upd); upd();
+    return el;
+  }
+  bindRange('rounds', v => String(v), v => settings.rounds = v);
+  bindRange('noise', v => v + '%', v => settings.noise = v / 100);
+  bindRange('reward', v => '+' + v.toFixed(1).replace(/\.0$/, ''), v => {
+    settings.reward = v;
+    $('mRR').textContent = `+${v.toFixed(1).replace(/\.0$/, '')} / +${v.toFixed(1).replace(/\.0$/, '')}`;
+  });
+  bindRange('turnover', v => String(v), v => settings.turnover = v);
+  bindRange('speed', v => SPEEDS[v] + '×', v => speedIdx = v);
+
+  $('tribes').innerHTML = STRATS.map(s => `
+    <div class="ctl">
+      <div class="ctl-head"><label for="start-${s.id}"><span>${shapeSVG(s, 14)}${s.name}</span></label><output id="start-${s.id}Out">10</output></div>
+      <input id="start-${s.id}" type="range" min="0" max="40" step="1" value="10">
+    </div>`).join('');
+  function updateTotal() {
+    const t = STRATS.reduce((sum, s) => sum + Number($('start-' + s.id).value), 0);
+    $('startTotal').textContent = `${t} creature${t === 1 ? '' : 's'}`;
+  }
+  STRATS.forEach(s => bindRange('start-' + s.id, v => String(v), () => updateTotal()));
+  function readStart() { STRATS.forEach(s => settings.start[s.id] = Number($('start-' + s.id).value)); }
+  function setStart(obj) { STRATS.forEach(s => { const el = $('start-' + s.id); el.value = obj[s.id] || 0; el.dispatchEvent(new Event('input')); }); }
+  function setRange(id, v) { const el = $(id); el.value = v; el.dispatchEvent(new Event('input')); }
+
+  $('playBtn').addEventListener('click', () => { running = !running; $('playBtn').textContent = running ? 'Pause' : 'Play'; });
+  $('resetBtn').addEventListener('click', () => { readStart(); reset(); });
+  $('applyStart').addEventListener('click', () => { readStart(); reset(); });
+  $('stepBtn').addEventListener('click', () => {
+    if (agents.length < 2) return;
+    const g0 = gen;
+    for (let i = 0; i < 20000 && gen === g0; i++) step(0.03);
+  });
+
+  $('strats').innerHTML = STRATS.map(s => `<div class="strat"><span class="who">${shapeSVG(s, 18)}${s.name}</span><p>${s.rule}</p></div>`).join('');
+
+  const EXPERIMENTS = [
+    { name: 'The classic tournament', q: 'Ten of every tribe, eight rounds per meeting, no mistakes.',
+      watch: 'Cheats boom early by feeding on Saints. What happens once the Saints are gone?',
+      rounds: 8, noise: 0, reward: 2, start: DEFAULT_START },
+    { name: 'Strangers only', q: 'Every meeting is a single round, so nobody ever meets again.',
+      watch: 'Without a future, does trust stand a chance?',
+      rounds: 1, noise: 0, reward: 2, start: DEFAULT_START },
+    { name: 'A clumsy world', q: 'One move in ten goes wrong by accident.',
+      watch: 'Two Mirrors can get stuck punishing each other forever. Who copes better with mistakes?',
+      rounds: 10, noise: 0.1, reward: 2, start: DEFAULT_START },
+    { name: 'Paradise invaded', q: 'Thirty-six Saints living in peace, and four Cheats arrive.',
+      watch: 'How fast can a few cheaters take over a kind colony?',
+      rounds: 8, noise: 0, reward: 2, start: { saint: 36, cheat: 4 } },
+    { name: 'Mirrors to the rescue', q: 'The same invaded paradise, but six Mirrors live there too.',
+      watch: 'Can a handful of creatures that hit back protect everyone?',
+      rounds: 8, noise: 0, reward: 2, start: { saint: 30, cheat: 4, mirror: 6 } },
+    { name: 'On a knife edge', q: 'Cooperating together only earns +0.6 each, right at the tipping point.',
+      watch: 'Run it several times. Does the same tribe win every time?',
+      rounds: 8, noise: 0, reward: 0.6, start: DEFAULT_START },
+  ];
+  $('exps').innerHTML = EXPERIMENTS.map((e, i) => `
+    <div class="exp">
+      <h3>${e.name}</h3>
+      <p>${e.q}</p>
+      <p class="watch">${e.watch}</p>
+      <button class="btn" type="button" data-exp="${i}">Run this experiment</button>
+    </div>`).join('');
+  $('exps').addEventListener('click', ev => {
+    const btn = ev.target.closest('[data-exp]'); if (!btn) return;
+    const e = EXPERIMENTS[btn.dataset.exp];
+    setRange('rounds', e.rounds); setRange('noise', Math.round(e.noise * 100)); setRange('reward', e.reward);
+    setStart(e.start); readStart(); reset();
+    running = true; $('playBtn').textContent = 'Pause';
+    $('dishWrap').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' });
+  });
+
+  sizeCanvases();
+  reset();
+  requestAnimationFrame(frame);
+})();
+</script>
+
+</body>
+</html>

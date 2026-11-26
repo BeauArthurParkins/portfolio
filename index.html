@@ -375,7 +375,7 @@
         <p>Born and raised in London. I care about the technology that's moving space travel forward, and about orbital mechanics. Right now I'm working towards a good grade in Edexcel GCSE Astronomy.</p>
         <div class="stats">
           <div class="stat"><b id="age">14</b><span>Years old</span></div>
-          <div class="stat"><b>7</b><span>Projects and counting</span></div>
+          <div class="stat"><b>8</b><span>Projects and counting</span></div>
         </div>
         <dl class="catalog">
           <dt>Object</dt><dd>TON 618, ultramassive black hole</dd>
@@ -563,6 +563,28 @@
         </a>
         <dl class="catalog">
           <dt>Object</dt><dd>Living green world (imagined)</dd>
+        </dl>
+      </div>
+    </section>
+
+    <section data-stop="trust">
+      <div class="panel">
+        <p class="eyebrow">Passion project · Simulation</p>
+        <h2>Trust Tribes</h2>
+        <p>An evolution simulator about trust. Sixty creatures share a dish, and whenever two meet they play several rounds of the prisoner's dilemma: each secretly chooses to cooperate or cheat. The best earners have children and the worst die out, so you can watch which personality takes over the colony.</p>
+        <ul class="features">
+          <li><b>Six tribes.</b> Mirror, Forgiver, Grudge, Saint, Cheat and Coin, each with its own colour, shape and rule for when to trust.</li>
+          <li><b>Real game theory.</b> Both cooperating earns <code>+2</code> each, but cheating someone who trusts you earns <code>+3</code> and leaves them on <code>−1</code>.</li>
+          <li><b>Surprising results.</b> Cheats win when nobody meets twice, Mirror wins long games, and Forgiver beats Mirror when mistakes happen.</li>
+          <li><b>Six experiments.</b> Change rounds, mistakes and rewards, or find the knife edge where the winner changes from run to run.</li>
+        </ul>
+        <div class="contact-row">
+          <a class="btn btn-accent" href="https://beauarthurparkins.github.io/portfolio/trust-tribes.html" target="_blank" rel="noopener">Try it ↗</a>
+          <span class="tag">Game theory · Evolution</span>
+        </div>
+        <dl class="catalog">
+          <dt>Object</dt><dd>Two-tone treaty world (imagined)</dd>
+          <dt>Inspired by</dt><dd>Robert Axelrod's 1980 tournaments</dd>
         </dl>
       </div>
     </section>
@@ -1387,6 +1409,9 @@
   addWorld(W8, 7.5, 2, 0x111216, 0x34373f, 0xffffff, 0xff2a2a, false);
   const W9 = new THREE.Vector3(-40, -30, -300);
   addWorld(W9, 7, 2, 0x2e6b3f, 0x9ad17b, 0xffffff, 0x9cf2b0, false);
+  // Trust Tribes: banded in the cooperators' blue and the saints' gold
+  const W10 = new THREE.Vector3(10, 22, -325);
+  addWorld(W10, 7.5, 0, 0x1d3550, 0x5a9bff, 0xf4cf62, 0x3fd6c0, false);
   const W5 = new THREE.Vector3(80, -6, -415);
   addWorld(W5, 7, 1, 0x0d1a2e, 0x1f3550, 0x3ad6ff, 0x6fd9ff, false);
   const W4 = new THREE.Vector3(-65, -16, -470);
@@ -1403,6 +1428,7 @@
     { obj: W7, r: 11, side: 1.0, up: 0.25, dist: 3.0 },                                  // Gravity Sandbox
     { obj: W8, r: 10, side: 1.0, up: 0.15, dist: 3.0 },                                  // Lights Out Delivery
     { obj: W9, r: 9.5, side: 1.0, up: 0.2, dist: 3.0 },                                  // Petri Selection
+    { obj: W10, r: 10, side: 1.0, up: 0.2, dist: 3.0 },                                  // Trust Tribes
     { obj: W2, r: 8.5, side: 1.0, up: 0.15, dist: 3.2 },
     { obj: W3, r: 10, side: 1.0, up: 0.3, dist: 3.0 },
     { obj: W5, r: 9.5, side: 1.0, up: 0.2, dist: 3.1 },                                 // lectures
