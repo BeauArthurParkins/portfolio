@@ -113,6 +113,32 @@
   .iss-track { fill: none; stroke: var(--ice); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
   .iss-start { fill: var(--ice); }
   .iss-peak { fill: #ffffff; filter: drop-shadow(0 0 3px rgba(143, 216, 255, 0.9)); }
+  /* live from space */
+  .live .sky { max-width: none; background: rgba(255, 255, 255, 0.03); backdrop-filter: none; -webkit-backdrop-filter: none; }
+  .live .sky + .sky { margin-top: -8px; }
+  .rocket-flame { fill: var(--accretion); transform-origin: 32px 41px; animation: flame .18s ease-in-out infinite alternate; }
+  @keyframes flame { from { transform: scaleY(0.75); opacity: .75 } to { transform: scaleY(1.15); opacity: 1 } }
+  .count { color: var(--star); }
+  .count b { color: var(--accretion); font-weight: 500; }
+  .crew-num { font: 700 22px var(--font-display); fill: var(--accretion); text-anchor: middle; }
+  .crew-orbit { fill: none; stroke: rgba(143, 216, 255, 0.35); stroke-width: 1; stroke-dasharray: 2 3; }
+  .crew-dot { fill: var(--ice); }
+  .apod-thumb { width: 64px; height: 64px; padding: 0; border: 1px solid var(--line); border-radius: 50%; overflow: hidden; background: #0b1020; cursor: pointer; display: grid; place-items: center; color: var(--dim); }
+  .apod-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .apod-thumb:hover { border-color: var(--accretion); }
+  .mini { font: 500 12px var(--font-mono); color: var(--accretion); background: none; border: 0; padding: 0; cursor: pointer; text-decoration: none; }
+  .mini:hover { text-decoration: underline; }
+  .apod-fig { margin: -4px 0 0; display: grid; gap: 8px; }
+  .apod-fig img { width: 100%; max-height: 420px; object-fit: cover; border-radius: 6px; border: 1px solid var(--line); display: block; }
+  .apod-fig figcaption { font-size: 14px; color: var(--dim); }
+  .crew-list { margin: 4px 0 0; padding: 0; list-style: none; display: grid; gap: 8px; font-size: 14px; }
+  .crew-list h4 { margin: 4px 0 0; font: 500 11px var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--ice); }
+  .crew-list li { color: var(--star); display: flex; flex-wrap: wrap; gap: 0 8px; }
+  .crew-list li span { color: var(--dim); font-size: 13px; }
+  .live-note { font-family: var(--font-mono); font-size: 11px; color: var(--dim); }
+  .live-note a { color: var(--dim); }
+  .live [hidden] { display: none !important; }
+  @media (prefers-reduced-motion: reduce) { .rocket-flame { animation: none; } }
   .scroll-cue { font-family: var(--font-mono); font-size: 12px; color: var(--dim); letter-spacing: 0.1em; text-transform: uppercase; }
 
   /* object caption beside each panel */
@@ -280,6 +306,65 @@
           </div>
         </div>
         <p class="scroll-cue">Scroll to travel ↓</p>
+      </div>
+    </section>
+
+    <section class="live" data-stop="live">
+      <div class="panel">
+        <p class="eyebrow">Live from space</p>
+        <h2>Right now, out there</h2>
+        <p>Three things happening above us at this moment, pulled in fresh every time the page loads.</p>
+
+        <div class="sky" id="launch-panel">
+          <svg class="moon" viewBox="0 0 64 64" aria-hidden="true">
+            <circle cx="32" cy="32" r="28" class="dome"/>
+            <path class="rocket-flame" d="M29.5 41 L32 52 L34.5 41 Z"/>
+            <path d="M32 12 C37.5 18 38.5 29 37 41 L27 41 C25.5 29 26.5 18 32 12 Z" fill="#e9ecf8"/>
+            <path d="M27.4 33 L22 43 L27.6 40.5 Z M36.6 33 L42 43 L36.4 40.5 Z" fill="#9aa2bf"/>
+            <circle cx="32" cy="25" r="2.6" fill="#8fd8ff"/>
+          </svg>
+          <div class="sky-body">
+            <p class="sky-label">Next rocket launch<span id="launch-status"></span></p>
+            <p class="sky-phase" id="launch-name">Checking the launch schedule…</p>
+            <p class="sky-tip" id="launch-tip"></p>
+            <p class="sky-next count" id="launch-count" aria-live="off"></p>
+          </div>
+        </div>
+
+        <div class="sky" id="apod-panel">
+          <button class="apod-thumb" id="apod-thumb" type="button" aria-expanded="false" aria-controls="apod-fig" aria-label="Show NASA's picture of the day">
+            <img id="apod-img" alt="" hidden>
+            <svg id="apod-icon" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M4 5h16v14H4zM6 17h12l-4-5-3 3.5-2-2.5z"/></svg>
+          </button>
+          <div class="sky-body">
+            <p class="sky-label">NASA picture of the day · <span id="apod-date">—</span></p>
+            <p class="sky-phase" id="apod-title">Fetching today's picture…</p>
+            <p class="sky-tip" id="apod-credit"></p>
+            <p class="sky-next"><button class="mini" id="apod-toggle" type="button" aria-expanded="false" aria-controls="apod-fig" hidden>Show picture ↓</button> <a class="mini" id="apod-link" href="https://science.nasa.gov/apod/" target="_blank" rel="noopener">Open on NASA ↗</a></p>
+          </div>
+        </div>
+        <figure class="apod-fig" id="apod-fig" hidden>
+          <img id="apod-big" alt="">
+          <figcaption id="apod-text"></figcaption>
+        </figure>
+
+        <div class="sky" id="crew-panel">
+          <svg class="moon" viewBox="0 0 64 64" aria-hidden="true">
+            <circle cx="32" cy="32" r="28" class="dome"/>
+            <ellipse cx="32" cy="32" rx="25" ry="9" class="crew-orbit" transform="rotate(-20 32 32)"/>
+            <circle cx="55" cy="24" r="2" class="crew-dot"/>
+            <text x="32" y="40" class="crew-num" id="crew-num">–</text>
+          </svg>
+          <div class="sky-body">
+            <p class="sky-label">People in space right now</p>
+            <p class="sky-phase" id="crew-head">Counting astronauts…</p>
+            <p class="sky-tip" id="crew-where"></p>
+            <p class="sky-next"><button class="mini" id="crew-toggle" type="button" aria-expanded="false" aria-controls="crew-list" hidden>Who's up there ↓</button></p>
+          </div>
+        </div>
+        <div class="crew-list" id="crew-list" hidden></div>
+
+        <p class="live-note" id="live-note">Data: <a href="https://thespacedevs.com/" target="_blank" rel="noopener">The Space Devs</a> · <a href="https://science.nasa.gov/apod/" target="_blank" rel="noopener">NASA APOD</a> · <a href="https://github.com/corquaid/international-space-station-APIs" target="_blank" rel="noopener">corquaid crew API</a></p>
       </div>
     </section>
 
@@ -736,6 +821,188 @@
     run().catch(() => { when.textContent = 'Pass times could not load.'; });
   }
 
+  /* ---------- live from space: next launch, NASA picture of the day, people in space ---------- */
+  {
+    const $ = id => document.getElementById(id);
+    const tz = { timeZone: 'Europe/London' };
+    const SNAP_DATE = '26 Nov 2026';
+    let usedSnapshot = false;
+
+    // Snapshots for when live data can't be fetched (the claude.ai copy blocks outside requests).
+    const SNAP_LAUNCHES = [
+      ['Electron | Night Owls Never Sleep (StriX Launch 14)', '2026-11-27T00:05:00Z', 'MIN', 'Go', 'Rocket Lab', 'Mahia Peninsula, New Zealand'],
+      ['Long March 6A | Unknown Payload', '2026-11-27T13:00:00Z', 'HR', 'Go', 'CASC', 'Taiyuan, China'],
+      ['Long March 6C | Unknown Payload', '2026-11-29T03:50:00Z', 'HR', 'Go', 'CASC', 'Taiyuan, China'],
+      ['Falcon 9 Block 5 | USSF-380', '2026-11-29T04:39:00Z', 'MIN', 'Go', 'SpaceX', 'Vandenberg SFB, USA'],
+      ['Falcon 9 Block 5 | Cygnus CRS-2 NG-25', '2026-11-29T15:47:00Z', 'MIN', 'Go', 'SpaceX', 'Cape Canaveral SFS, USA'],
+      ['Mir | Demo Flight', '2026-11-30T00:00:00Z', 'M', 'TBD', 'ADD', 'Sea Launch'],
+      ['Kinetica 1 | Unknown Payload', '2026-12-01T01:45:00Z', 'HR', 'Go', 'CAS Space', 'Haiyang Oriental Spaceport'],
+      ['Kuaizhou 11 | Unknown Payload', '2026-12-01T08:00:00Z', 'HR', 'TBC', 'ExPace', 'Jiuquan, China'],
+      ['Falcon 9 Block 5 | NROL-132', '2026-12-02T20:30:00Z', 'MIN', 'TBC', 'SpaceX', 'Vandenberg SFB, USA'],
+      ['Falcon 9 Block 5 | CHORUS', '2026-12-04T12:55:00Z', 'MIN', 'Go', 'SpaceX', 'Cape Canaveral SFS, USA']
+    ];
+    const SNAP_APOD = {
+      title: 'Eye in the Sky: The Milky Way over Lençóis', date: '2026-11-26T05:05:00Z',
+      link: 'https://science.nasa.gov/image-article/apod-2026-november-26-eye-in-the-sky-the-milky-way-over-lencois/',
+      img: 'https://assets.science.nasa.gov/dynamicimage/assets/science/cds/apod/apod/2026/november/Milky_Way_Lencois.jpg',
+      credit: 'Ignacio Fernández',
+      alt: 'The bright arch of the Milky Way over a dark lagoon surrounded by white sand dunes in Lençóis Maranhenses, Brazil.',
+      text: 'The Milky Way shines bright in the sky of Brazil, over the white sand dunes and dark lagoons of Lençóis Maranhenses National Park. The arch is an effect of the wide-angle lens, framed to match the curve of the lagoon.'
+    };
+    const SNAP_CREW = [
+      ['Zhu Yangzhu', 'China', 'CMSA', 'Shenzhou 23', false, 1779628116],
+      ['Zhang Zhiyuan', 'China', 'CMSA', 'Shenzhou 23', false, 1779628116],
+      ['Lai Ka-ying', 'China', 'CMSA', 'Shenzhou 23', false, 1779628116],
+      ['Pyotr Dubrov', 'Russia', 'Roscosmos', 'Soyuz MS-29', true, 1784040463],
+      ['Anna Kikina', 'Russia', 'Roscosmos', 'Soyuz MS-29', true, 1784040463],
+      ['Anil Menon', 'United States', 'NASA', 'Soyuz MS-29', true, 1784040463],
+      ['Jessica Watkins', 'United States', 'NASA', 'Crew-13 Dragon', true, 1790867406],
+      ['Luke Delaney', 'United States', 'NASA', 'Crew-13 Dragon', true, 1790867406],
+      ['Joshua Kutryk', 'Canada', 'CSA', 'Crew-13 Dragon', true, 1790867406],
+      ['Sergey Teteryatnikov', 'Russia', 'Roscosmos', 'Crew-13 Dragon', true, 1790867406]
+    ];
+
+    // fetch with a timeout, keeping a copy in this browser so repeat visits don't hit rate limits
+    function getText(url, ms) {
+      const ctl = new AbortController(), t = setTimeout(() => ctl.abort(), ms || 9000);
+      return fetch(url, { signal: ctl.signal }).then(r => { if (!r.ok) throw new Error(r.status); return r.text(); })
+        .finally(() => clearTimeout(t));
+    }
+    function cached(key, maxAge, load) {
+      try {
+        const c = JSON.parse(localStorage.getItem(key));
+        if (c && Date.now() - c.t < maxAge) return Promise.resolve(c.v);
+      } catch (e) { /* storage unavailable */ }
+      return load().then(v => { try { localStorage.setItem(key, JSON.stringify({ t: Date.now(), v })); } catch (e) {} return v; });
+    }
+    const plain = html => (new DOMParser().parseFromString(html || '', 'text/html').body.textContent || '').replace(/\s+/g, ' ').trim();
+    const shortPlace = s => { const p = (s || '').split(', '); return p.length > 2 ? p[0] + ', ' + p[p.length - 1] : s; };
+    function noteSnapshot() {
+      if (usedSnapshot) return; usedSnapshot = true;
+      const n = $('live-note');
+      n.insertAdjacentHTML('afterbegin', `Live feeds are blocked on this copy, so some panels show a snapshot from ${SNAP_DATE}. <a href="https://beauarthurparkins.github.io/portfolio/" target="_blank" rel="noopener">The GitHub version</a> updates live. `);
+    }
+
+    /* next rocket launch, with a ticking countdown */
+    {
+      const pad = n => String(n).padStart(2, '0');
+      let list = [], timer;
+      function show() {
+        const now = Date.now();
+        // a launch stays up for 20 minutes after T-0, then the next one takes over
+        const i = list.findIndex(l => Date.parse(l[1]) > now - 20 * 60000);
+        if (i < 0) {
+          $('launch-name').textContent = 'Launch schedule needs refreshing';
+          $('launch-tip').textContent = 'The live schedule is on beauarthurparkins.github.io/portfolio.';
+          $('launch-count').textContent = ''; clearInterval(timer); return;
+        }
+        const [name, net, prec, status, who, where] = list[i];
+        const [rocket, mission] = name.includes(' | ') ? name.split(' | ') : [name, ''];
+        const secret = !mission || /unknown payload/i.test(mission);
+        $('launch-name').textContent = secret ? `${rocket} · classified payload` : mission;
+        $('launch-status').textContent = status ? ` · ${status}` : '';
+        $('launch-tip').textContent = `${secret ? 'Rocket' : rocket} by ${who}, from ${where}.`;
+        const t = Date.parse(net), left = t - now;
+        const when = new Date(t).toLocaleString('en-GB', Object.assign({ weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }, tz));
+        const loose = prec && !/^(SEC|MIN)$/.test(prec);
+        const line = $('launch-count');
+        if (left <= 0) { line.innerHTML = `<b>Liftoff window open now</b> · ${when} London`; return; }
+        if (prec && !/^(SEC|MIN|HR)$/.test(prec)) {
+          line.textContent = `Date not fixed yet · no earlier than ${new Date(t).toLocaleDateString('en-GB', Object.assign({ day: 'numeric', month: 'short' }, tz))}`;
+          return;
+        }
+        const s = Math.floor(left / 1000), d = Math.floor(s / 86400), h = Math.floor(s % 86400 / 3600), m = Math.floor(s % 3600 / 60);
+        line.innerHTML = `<b>T− ${d ? d + 'd ' : ''}${pad(h)}h ${pad(m)}m ${pad(s % 60)}s</b> · ${when} London${loose ? ' (± 1 hr)' : ''}`;
+      }
+      function start(l) { list = l; show(); clearInterval(timer); timer = setInterval(show, 1000); }
+      cached('live-launches', 20 * 60000, () =>
+        getText('https://ll.thespacedevs.com/2.3.0/launches/upcoming/?limit=10&mode=normal').then(t => JSON.parse(t).results.map(r => {
+          const lsp = r.launch_service_provider || {};
+          return [r.name, r.net, r.net_precision && r.net_precision.abbrev, r.status && r.status.abbrev,
+            lsp.name && lsp.name.length <= 26 ? lsp.name : (lsp.abbrev || lsp.name || 'an unknown provider'),
+            shortPlace(r.pad && r.pad.location && r.pad.location.name)];
+        }))
+      ).then(start).catch(() => { noteSnapshot(); start(SNAP_LAUNCHES); });
+    }
+
+    /* NASA's Astronomy Picture of the Day, from the official APOD feed */
+    {
+      const thumb = $('apod-thumb'), toggle = $('apod-toggle'), fig = $('apod-fig');
+      function show(a) {
+        $('apod-date').textContent = new Date(a.date).toLocaleDateString('en-GB', Object.assign({ weekday: 'short', day: 'numeric', month: 'short' }, tz));
+        $('apod-title').textContent = a.title;
+        $('apod-credit').textContent = a.credit ? `Image credit: ${a.credit}` : '';
+        $('apod-link').href = a.link;
+        if (!a.img) {
+          $('apod-credit').textContent = "Today's entry is a video, so open it on NASA's site.";
+          thumb.onclick = () => window.open(a.link, '_blank', 'noopener');
+          return;
+        }
+        const small = $('apod-img');
+        small.onload = () => { small.hidden = false; $('apod-icon').style.display = 'none'; };
+        // where outside images are blocked, the button just shows the description
+        small.onerror = () => { $('apod-big').hidden = true; toggle.textContent = 'Read about it ↓'; };
+        small.src = a.img + '?w=160';
+        $('apod-big').alt = a.alt || a.title;
+        $('apod-text').textContent = a.text;
+        toggle.hidden = false;
+        const flip = () => {
+          const open = fig.hidden;
+          const big = $('apod-big'), word = big.hidden ? 'description' : 'picture';
+          if (open && !big.hidden && !big.src) big.src = a.img + '?w=1000';
+          fig.hidden = !open;
+          [thumb, toggle].forEach(b => b.setAttribute('aria-expanded', String(open)));
+          toggle.textContent = open ? `Hide ${word} ↑` : big.hidden ? 'Read about it ↓' : 'Show picture ↓';
+        };
+        thumb.onclick = flip; toggle.onclick = flip;
+      }
+      const NS = 'https://science.nasa.gov/apod/';
+      cached('live-apod', 3 * 3600000, () => getText('https://science.nasa.gov/feed/apod-basic/', 12000).then(xml => {
+        const item = new DOMParser().parseFromString(xml, 'text/xml').querySelector('item');
+        const g = n => { const e = item.getElementsByTagNameNS(NS, n)[0]; return e ? e.textContent.trim() : ''; };
+        const hd = g('hdurl').replace(/\?.*$/, '');
+        const words = plain(g('explanation')).replace(/^Explanation:\s*/i, '').replace(/Tomorrow's picture:.*$/i, '').trim();
+        return {
+          title: item.querySelector('title').textContent.trim(),
+          date: item.querySelector('pubDate').textContent,
+          link: item.querySelector('link').textContent.trim(),
+          img: /\.(jpe?g|png|gif|webp)$/i.test(hd) ? hd : '',
+          credit: plain(g('credit')), alt: g('alt'),
+          text: words.split(/(?<=[.!?])\s+/).slice(0, 3).join(' ')
+        };
+      })).then(show).catch(() => { noteSnapshot(); show(SNAP_APOD); });
+    }
+
+    /* people in space right now */
+    {
+      function show(people) {
+        const now = Date.now();
+        const place = p => p[4] ? 'the ISS' : /^shenzhou/i.test(p[3]) ? "China's Tiangong station" : p[3];
+        const groups = new Map();
+        people.forEach(p => { const k = place(p); groups.set(k, (groups.get(k) || []).concat([p])); });
+        $('crew-num').textContent = people.length;
+        $('crew-head').textContent = `${people.length} ${people.length === 1 ? 'human is' : 'humans are'} off Earth`;
+        $('crew-where').textContent = [...groups].map(([k, v]) => `${v.length} on ${k}`).join(' · ') + '.';
+        $('crew-list').innerHTML = [...groups].map(([k, v]) => `<h4>${k.replace(/^the /, '').replace(/^China's /, '')}</h4>` + v.map(p => {
+          const days = Math.max(0, Math.floor((now - p[5] * 1000) / 86400000));
+          const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+          return `<li>${esc(p[0])} <span>${esc(p[2])} · ${esc(p[1])} · ${days} days up · arrived on ${esc(p[3])}</span></li>`;
+        }).join('')).join('');
+        const btn = $('crew-toggle'), list = $('crew-list');
+        btn.hidden = false;
+        btn.onclick = () => {
+          list.hidden = !list.hidden;
+          btn.setAttribute('aria-expanded', String(!list.hidden));
+          btn.textContent = list.hidden ? "Who's up there ↓" : 'Hide crew ↑';
+        };
+      }
+      cached('live-crew', 3 * 3600000, () =>
+        getText('https://corquaid.github.io/international-space-station-APIs/JSON/people-in-space.json').then(t =>
+          JSON.parse(t).people.map(p => [p.name, p.country, p.agency, p.spacecraft, !!p.iss, p.launched]))
+      ).then(show).catch(() => { noteSnapshot(); show(SNAP_CREW); });
+    }
+  }
+
   /* ---------- age, counted up each 4 January ---------- */
   {
     const now = new Date();
@@ -1128,6 +1395,7 @@
   /* camera route: one stop per section */
   const stops = [
     { obj: new THREE.Vector3(0, 0, 0), r: R * 4.2, side: 1.0, up: 0.22, dist: 3.2 },   // hero: TON 618 wide
+    { obj: new THREE.Vector3(0, 0, 0), r: R * 3.4, side: 1.0, up: 0.55, dist: 2.6 },   // live from space: rising above the disk
     { obj: new THREE.Vector3(0, 0, 0), r: R * 2.6, side: 1.0, up: 0.10, dist: 3.0 },   // about: closer, flatter angle
     { obj: new THREE.Vector3(0, 0, 0), r: R * 3.4, side: 1.0, up: 1.6, dist: 1.6 },    // TON 618 guide: looking down onto the disk
     { obj: W1, r: 18, side: 1.0, up: 0.25, dist: 3.0 },
