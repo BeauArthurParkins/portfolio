@@ -653,6 +653,27 @@
       </div>
     </section>
 
+    <section data-stop="music">
+      <div class="panel">
+        <p class="eyebrow">Beyond science · Music</p>
+        <h2>Tideway</h2>
+        <p>Away from physics and code, I make beats and DJ under the name Tideway, producing tracks in BandLab.</p>
+        <ul class="log">
+          <li><time>01</time><div class="body"><h3 class="ph">[Featured track]</h3><p class="ph">(Name and one-line description of your best track, such as its style or mood, with a link to listen.)</p></div></li>
+          <li><time>02</time><div class="body"><h3 class="ph">[Featured track]</h3><p class="ph">(A second track you're proud of. Two or three good tracks are enough.)</p></div></li>
+        </ul>
+        <div class="contact-row">
+          <a class="link" href="https://www.bandlab.com/tidewayofficial" target="_blank" rel="noopener">Listen on BandLab ↗</a>
+          <span class="tag">DJ · Beatmaker</span>
+        </div>
+        <dl class="catalog">
+          <dt>Artist</dt><dd>Tideway</dd>
+          <dt>Made in</dt><dd>BandLab</dd>
+          <dt>Object</dt><dd>Club-light world (imagined)</dd>
+        </dl>
+      </div>
+    </section>
+
     <section data-stop="7">
       <div class="panel">
         <p class="eyebrow">Transmission</p>
@@ -1416,6 +1437,9 @@
   addWorld(W5, 7, 1, 0x0d1a2e, 0x1f3550, 0x3ad6ff, 0x6fd9ff, false);
   const W4 = new THREE.Vector3(-65, -16, -470);
   addWorld(W4, 9, 0, 0x3a1d6e, 0x9b7ae0, 0x2fb7c9, 0xb58cff, false);
+  // Tideway music: deep-sea bands under pink club lights
+  const W11 = new THREE.Vector3(30, 12, -520);
+  addWorld(W11, 6.5, 0, 0x14102e, 0x2f86b3, 0xe05aa0, 0xff7ad9, false);
 
   /* camera route: one stop per section */
   const stops = [
@@ -1433,6 +1457,7 @@
     { obj: W3, r: 10, side: 1.0, up: 0.3, dist: 3.0 },
     { obj: W5, r: 9.5, side: 1.0, up: 0.2, dist: 3.1 },                                 // lectures
     { obj: W4, r: 12, side: 1.0, up: 0.2, dist: 3.0 },                                  // YouTube channel
+    { obj: W11, r: 9, side: 1.0, up: 0.25, dist: 3.0 },                                 // Tideway music
     { obj: new THREE.Vector3(0, 0, -230), r: 200, side: 0.4, up: 0.35, dist: 1.6 },     // contact: pull back over the whole route
   ];
   const sections = [...document.querySelectorAll('section[data-stop]')];
